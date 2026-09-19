@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f3f9e">
+<title>Charla · Spanisch Small-Talk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#1f3f9e; --blue-deep:#162e76; --tile:#2a4fb3;
+  --paper:#fdfcf8; --ink:#16213e; --muted:#5e6782; --line:#e3e6ef; --soft:#f1f3f9;
+  --no:#d6423a; --half:#e9a800; --yes:#23935f;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --text:"Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --blue:#0f1f55; --blue-deep:#0a153d; --tile:#15296a;
+    --paper:#1b2240; --ink:#eef1fb; --muted:#a3abc6; --line:#2e3761; --soft:#232b4f;
+  }
+}
+:root[data-theme="dark"]{
+  --blue:#0f1f55; --blue-deep:#0a153d; --tile:#15296a;
+  --paper:#1b2240; --ink:#eef1fb; --muted:#a3abc6; --line:#2e3761; --soft:#232b4f;
+}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;height:100%;font-family:var(--text);color:var(--ink);
+  background-color:var(--blue);
+  background-image:
+    radial-gradient(circle at 50% 50%, transparent 38%, var(--tile) 39%, var(--tile) 41%, transparent 42%),
+    linear-gradient(45deg, transparent 47%, rgba(255,255,255,.05) 48%, rgba(255,255,255,.05) 52%, transparent 53%),
+    linear-gradient(-45deg, transparent 47%, rgba(255,255,255,.05) 48%, rgba(255,255,255,.05) 52%, transparent 53%);
+  background-size:72px 72px;
+  -webkit-tap-highlight-color:transparent;
+}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--half);outline-offset:2px}
+.app{max-width:620px;margin:0 auto;height:100%;display:flex;flex-direction:column}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px 8px;color:#fff}
+.brand{font-family:var(--display);font-weight:800;font-size:1.6rem;letter-spacing:-.02em;margin:0;line-height:1}
+.brand small{display:block;font-family:var(--text);font-weight:400;font-size:.78rem;opacity:.75;letter-spacing:0;margin-top:3px}
+nav{display:flex;gap:2px;background:rgba(0,0,0,.18);border-radius:999px;padding:3px}
+nav button{border:0;background:transparent;color:#fff;padding:7px 12px;border-radius:999px;font-size:.9rem;opacity:.8}
+nav button[aria-selected="true"]{background:#fff;color:var(--blue-deep);opacity:1;font-weight:700}
+main{flex:1;min-height:0;display:flex;flex-direction:column}
+.view{flex:1;min-height:0;display:none;flex-direction:column}
+.view.active{display:flex}
+
+/* ---------- Lernen ---------- */
+.counts{display:flex;justify-content:center;gap:18px;color:#fff;font-size:.9rem;padding:4px 0 10px}
+.counts b{font-family:var(--display);font-size:1.05rem}
+.counts .n b{color:#9ec0ff}.counts .l b{color:#ffb4ae}.counts .r b{color:#9fe3bf}
+.stage{flex:1;min-height:320px;position:relative;padding:0 16px;display:flex;align-items:stretch;justify-content:center}
+.card{
+  position:relative;width:100%;max-width:520px;background:var(--paper);border-radius:22px;
+  box-shadow:0 2px 0 rgba(0,0,0,.08), 0 18px 40px rgba(5,15,50,.35);
+  padding:18px 22px 22px;display:flex;flex-direction:column;touch-action:none;user-select:none;-webkit-user-select:none;
+  transition:transform .22s ease, opacity .22s ease;will-change:transform
+}
+.card.enter{animation:enter .22s ease}
+@keyframes enter{from{transform:scale(.94);opacity:0}to{transform:none;opacity:1}}
+.card-top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.82rem;color:var(--muted);white-space:nowrap}
+.card-top .chip{overflow:hidden;text-overflow:ellipsis}
+.chip{background:var(--soft);padding:4px 10px;border-radius:999px}
+.side{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:8px;padding:10px 0}
+.prompt{font-family:var(--display);font-weight:700;font-size:clamp(1.7rem,6.5vw,2.5rem);line-height:1.12;letter-spacing:-.015em;overflow-wrap:anywhere}
+.answer{font-family:var(--display);font-weight:500;font-size:clamp(1.25rem,4.8vw,1.7rem);line-height:1.2;overflow-wrap:anywhere}
+.pron{font-size:1.02rem;color:var(--muted);letter-spacing:.02em}
+.pron::before{content:"[ "}.pron::after{content:" ]"}
+.divider{height:2px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 14px);margin:4px 0}
+.speak{border:0;background:var(--blue);color:#fff;width:46px;height:46px;border-radius:50%;display:inline-grid;place-items:center;flex:none}
+.speak.small{}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .speak{background:#3d5fd1}}
+.speak svg{width:22px;height:22px}
+.speak.small{width:34px;height:34px}.speak.small svg{width:16px;height:16px}
+.reveal{border:2px dashed var(--line);background:transparent;border-radius:14px;padding:14px 22px;color:var(--muted)}
+.stamp{position:absolute;top:22px;font-family:var(--display);font-weight:800;font-size:1.4rem;padding:4px 12px;border:3px solid;border-radius:10px;opacity:0;pointer-events:none;background:var(--paper)}
+.stamp.no{right:20px;color:var(--no);transform:rotate(8deg)}
+.stamp.yes{left:20px;color:var(--yes);transform:rotate(-8deg)}
+.stamp.half{left:50%;top:auto;bottom:24px;transform:translateX(-50%);color:var(--half)}
+.done{width:100%;max-width:520px;background:var(--paper);border-radius:22px;padding:28px 24px;text-align:center;display:flex;flex-direction:column;gap:14px;justify-content:center;box-shadow:0 18px 40px rgba(5,15,50,.35)}
+.done h2{font-family:var(--display);font-size:2rem;margin:0}
+.done p{margin:0;color:var(--muted)}
+.tally{display:flex;justify-content:center;gap:22px;font-family:var(--display);font-size:1.3rem;font-weight:700}
+.tally .y{color:var(--yes)}.tally .h{color:var(--half)}.tally .x{color:var(--no)}
+.rate{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:14px 16px 6px}
+.rate button{border:0;border-radius:16px;padding:12px 6px 10px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:700;font-size:1rem;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+.rate button:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.2)}
+.rate button span{font-weight:400;font-size:.78rem;opacity:.9}
+.rate .b-no{background:var(--no)}.rate .b-half{background:var(--half);color:#2a1e00}.rate .b-yes{background:var(--yes)}
+.rate button:disabled{opacity:.4}
+.below{display:flex;justify-content:space-between;align-items:center;padding:4px 18px 12px;color:rgba(255,255,255,.75);font-size:.8rem;gap:10px}
+.linkbtn{border:0;background:transparent;color:#fff;text-decoration:underline;text-underline-offset:3px;padding:6px 0}
+.linkbtn:disabled{opacity:.35;text-decoration:none}
+
+/* ---------- Blätter (Liste, Statistik, Einstellungen) ---------- */
+.sheet{flex:1;min-height:0;overflow:auto;background:var(--paper);border-radius:22px 22px 0 0;padding:18px 18px 28px;margin-top:6px}
+.sheet h2{font-family:var(--display);font-size:1.4rem;margin:0 0 12px}
+.sheet h3{font-family:var(--display);font-size:1.1rem;margin:22px 0 8px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.tools input[type=search]{flex:1 1 180px}
+input[type=search],input[type=text],input[type=number],select{border:1.5px solid var(--line);background:var(--paper);border-radius:10px;padding:9px 11px;min-width:0}
+.btn{border:1.5px solid var(--line);background:var(--soft);border-radius:10px;padding:9px 13px}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.danger{color:var(--no)}
+.meta{color:var(--muted);font-size:.85rem;margin:0 0 8px}
+.row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.r-es{font-weight:700}
+.r-pron{color:var(--muted);font-size:.85rem}
+.r-de{font-size:.95rem}
+.r-meta{text-align:right;font-size:.8rem;color:var(--muted);display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.pill{border-radius:999px;padding:2px 9px;font-size:.75rem;font-weight:700;background:var(--soft);color:var(--muted)}
+.pill.lernend{background:#fde3e1;color:#9c2a22}.pill.jung{background:#fff1c7;color:#7a5800}.pill.gefestigt{background:#d7f2e4;color:#17603f}
+.add{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin:6px 0 16px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.tile{background:var(--soft);border-radius:14px;padding:12px 14px}
+.tile b{display:block;font-family:var(--display);font-size:1.6rem;line-height:1.1}
+.tile span{font-size:.85rem;color:var(--muted)}
+.bars{display:flex;align-items:flex-end;gap:5px;height:120px;padding-top:10px}
+.bars div{flex:1;background:var(--blue);border-radius:5px 5px 0 0;min-height:2px;position:relative}
+.bars div[data-n]::after{content:attr(data-n);position:absolute;top:-17px;left:0;right:0;text-align:center;font-size:.7rem;color:var(--muted)}
+.barlbl{display:flex;gap:5px;font-size:.68rem;color:var(--muted)}.barlbl span{flex:1;text-align:center}
+.prog{margin:10px 0}
+.prog .lbl{display:flex;justify-content:space-between;font-size:.88rem;margin-bottom:4px}
+.track{height:10px;border-radius:999px;background:var(--soft);overflow:hidden;display:flex}
+.track i{display:block;height:100%}
+.legend{display:flex;gap:14px;font-size:.8rem;color:var(--muted);flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.set{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.set label{font-weight:700}
+.set small{display:block;font-weight:400;color:var(--muted);font-size:.83rem;margin-top:2px}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 14px;margin-top:6px}
+.cats label{font-weight:400;display:flex;gap:8px;align-items:center}
+.note{background:var(--soft);border-radius:12px;padding:12px 14px;font-size:.9rem;line-height:1.5}
+.note p{margin:.3em 0}
+input[type=checkbox]{width:20px;height:20px;accent-color:var(--blue)}
+input[type=range]{accent-color:var(--blue)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:12px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90%}
+.toast.show{opacity:1}
+@media (max-width:420px){ header{flex-direction:column;align-items:flex-start} nav{align-self:stretch;justify-content:space-between} nav button{padding:7px 10px} }
+@media (prefers-reduced-motion:reduce){ .card,.card.enter{transition:none;animation:none} }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1 class="brand">Charla<small>Spanisch für Small-Talk</small></h1>
+    <nav role="tablist">
+      <button role="tab" data-view="learn" aria-selected="true">Lernen</button>
+      <button role="tab" data-view="list" aria-selected="false">Liste</button>
+      <button role="tab" data-view="stats" aria-selected="false">Statistik</button>
+      <button role="tab" data-view="settings" aria-selected="false">Optionen</button>
+    </nav>
+  </header>
+  <main>
+    <!-- Lernen -->
+    <section class="view active" id="view-learn">
+      <div class="counts" aria-live="polite">
+        <span class="n"><b id="cnt-new">0</b> neu</span>
+        <span class="l"><b id="cnt-learn">0</b> in Arbeit</span>
+        <span class="r"><b id="cnt-rev">0</b> Wiederholung</span>
+      </div>
+      <div class="stage">
+        <div class="card" id="card"></div>
+        <div class="done" id="done" hidden></div>
+      </div>
+      <div class="rate" id="rate">
+        <button class="b-no" data-r="no">Nicht<span id="pv-no">←</span></button>
+        <button class="b-half" data-r="half">Halb<span id="pv-half">↑</span></button>
+        <button class="b-yes" data-r="yes">Gewusst<span id="pv-yes">→</span></button>
+      </div>
+      <div class="below">
+        <span>Wischen: ← nicht · ↑ halb · → gewusst</span>
+        <button class="linkbtn" id="undo" disabled>Rückgängig</button>
+      </div>
+    </section>
+
+    <!-- Liste -->
+    <section class="view" id="view-list">
+      <div class="sheet">
+        <h2>Wortliste</h2>
+        <div class="tools">
+          <input type="search" id="q" placeholder="Suchen (spanisch oder deutsch)">
+          <select id="f-cat"><option value="">Alle Kategorien</option></select>
+          <select id="f-status">
+            <option value="">Jeder Stand</option><option value="neu">Neu</option><option value="lernend">In Arbeit</option>
+            <option value="jung">Jung</option><option value="gefestigt">Gefestigt</option><option value="due">Jetzt fällig</option>
+          </select>
+        </div>
+        <div class="tools">
+          <button class="btn" id="exp-csv">Als CSV exportieren</button>
+          <button class="btn" id="exp-txt">Als TXT exportieren</button>
+          <button class="btn" id="imp-btn">CSV importieren</button>
+          <input type="file" id="imp-file" accept=".csv,.txt,text/csv" hidden>
+        </div>
+        <details>
+          <summary>Eigenes Wort hinzufügen</summary>
+          <div class="add">
+            <input type="text" id="add-es" placeholder="Spanisch" lang="es">
+            <input type="text" id="add-de" placeholder="Deutsch">
+            <button class="btn primary" id="add-btn">Hinzufügen</button>
+          </div>
+        </details>
+        <p class="meta" id="list-meta"></p>
+        <div id="list"></div>
+      </div>
+    </section>
+
+    <!-- Statistik -->
+    <section class="view" id="view-stats">
+      <div class="sheet" id="stats"></div>
+    </section>
+
+    <!-- Einstellungen -->
+    <section class="view" id="view-settings">
+      <div class="sheet">
+        <h2>Optionen</h2>
+        <div class="set"><label for="s-dir">Abfragerichtung</label>
+          <select id="s-dir"><option value="es-de">Spanisch → Deutsch</option><option value="de-es">Deutsch → Spanisch</option><option value="mix">Gemischt</option></select></div>
+        <div class="set"><label for="s-new">Neue Wörter pro Runde<small>Bereits gelernte fällige Wörter kommen immer dazu.</small></label>
+          <input type="number" id="s-new" min="1" max="200" style="width:84px"></div>
+        <div class="set"><label for="s-order">Reihenfolge neuer Wörter</label>
+          <select id="s-order"><option value="random">Zufällig</option><option value="list">Wie in der Liste</option></select></div>
+        <div class="set"><label for="s-show">Lösung sofort anzeigen<small>Aus: Karte antippen oder Eingabetaste, um die Lösung aufzudecken.</small></label>
+          <input type="checkbox" id="s-show"></div>
+        <div class="set"><label for="s-pron">Lesehilfe (Aussprache) anzeigen</label>
+          <input type="checkbox" id="s-pron"></div>
+        <div class="set"><label for="s-variant">Aussprache<small>Beeinflusst Lesehilfe und Vorlese-Stimme.</small></label>
+          <select id="s-variant"><option value="latam">Lateinamerika</option><option value="spain">Spanien</option></select></div>
+        <div class="set"><label for="s-auto">Spanisch automatisch vorlesen</label>
+          <input type="checkbox" id="s-auto"></div>
+        <div class="set"><label for="s-rate">Sprechtempo <small id="s-rate-val"></small></label>
+          <input type="range" id="s-rate" min="0.5" max="1.2" step="0.05"></div>
+        <div class="set"><label>Stimme<small id="voice-info">Suche spanische Stimme …</small></label>
+          <button class="btn" id="voice-test">Testen</button></div>
+
+        <h3>Kategorien zum Lernen</h3>
+        <div class="tools"><button class="btn" id="cats-all">Alle</button><button class="btn" id="cats-none">Keine</button></div>
+        <div class="cats" id="cats"></div>
+
+        <h3>So liest du die Lesehilfe</h3>
+        <div class="note">
+          <p><b>GROSS</b> geschriebene Silben werden betont: <i>¿Cómo estás?</i> → KO-mo es-TAS.</p>
+          <p><b>ch</b> wie in „Bach“, <b>j</b> wie in „ja“, <b>tsch</b> wie in „Matsch“, <b>nj</b> wie in „Kognak“. Das <b>s</b> ist immer scharf wie in „Haus“, das <b>r</b> wird gerollt, <b>rr</b> kräftig.</p>
+          <p>Bei „Spanien“ steht <b>th</b> für das gelispelte c/z wie im englischen „think“.</p>
+          <p>Die Lesehilfe wird nach den spanischen Ausspracheregeln automatisch erzeugt – sie ist eine Näherung, das Vorlesen ist genauer.</p>
+        </div>
+
+        <h3>Daten</h3>
+        <p class="meta">Dein Fortschritt wird in diesem Browser gespeichert. Mit dem CSV-Export kannst du ihn sichern und per Import (auch auf einem anderen Gerät) wiederherstellen.</p>
+        <div class="tools">
+          <button class="btn" id="exp-csv2">Als CSV exportieren</button>
+          <button class="btn danger" id="reset">Fortschritt zurücksetzen</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* =========================================================
+   Vokabeln: "spanisch|deutsch", Kategorie mit #
+   ========================================================= */
+const DATA = `
+#Begrüßung & Abschied
+hola|hallo
+buenos días|guten Morgen / guten Tag
+buenas tardes|guten Tag (nachmittags)
+buenas noches|guten Abend / gute Nacht
+adiós|tschüss / auf Wiedersehen
+hasta luego|bis später
+hasta mañana|bis morgen
+hasta pronto|bis bald
+nos vemos|wir sehen uns
+¿Qué tal?|Wie geht's?
+¿Cómo estás?|Wie geht es dir?
+¿Cómo está usted?|Wie geht es Ihnen?
+bien, gracias|gut, danke
+muy bien|sehr gut
+más o menos|so lala
+¿Y tú?|Und du?
+mucho gusto|sehr erfreut
+encantado / encantada|freut mich
+bienvenido|willkommen
+¿Qué pasa?|Was ist los?
+igualmente|gleichfalls
+que tengas un buen día|hab einen schönen Tag
+#Höflichkeit & Reaktionen
+por favor|bitte
+gracias|danke
+muchas gracias|vielen Dank
+de nada|gern geschehen
+perdón|Entschuldigung
+disculpe|entschuldigen Sie
+lo siento|es tut mir leid
+no pasa nada|macht nichts
+claro|klar / natürlich
+por supuesto|selbstverständlich
+vale|okay (Spanien)
+sí|ja
+no|nein
+quizás|vielleicht
+de acuerdo|einverstanden
+no te preocupes|keine Sorge
+¡Salud!|Prost! / Gesundheit!
+¡Buen provecho!|Guten Appetit!
+¡Qué amable!|Wie nett!
+¡Qué bien!|Wie schön! / Super!
+¡Qué pena!|Wie schade!
+¡Qué suerte!|Was für ein Glück!
+¡Qué guay!|Wie cool! (Spanien)
+¡Ojalá!|Hoffentlich!
+¡No me digas!|Was du nicht sagst!
+¡Qué casualidad!|Was für ein Zufall!
+#Fragen
+¿qué?|was?
+¿quién?|wer?
+¿dónde?|wo?
+¿de dónde?|woher?
+¿cuándo?|wann?
+¿por qué?|warum?
+¿cómo?|wie?
+¿cuánto?|wie viel?
+¿cuál?|welche(r, s)?
+¿Cómo te llamas?|Wie heißt du?
+Me llamo …|Ich heiße …
+¿De dónde eres?|Woher kommst du?
+Soy de Alemania.|Ich komme aus Deutschland.
+¿Dónde vives?|Wo wohnst du?
+¿Cuántos años tienes?|Wie alt bist du?
+Tengo … años.|Ich bin … Jahre alt.
+¿A qué te dedicas?|Was machst du beruflich?
+¿Hablas inglés?|Sprichst du Englisch?
+¿Qué significa …?|Was bedeutet …?
+¿Cómo se dice … en español?|Wie sagt man … auf Spanisch?
+¿Qué hora es?|Wie spät ist es?
+¿Cuánto cuesta?|Wie viel kostet das?
+¿Dónde está el baño?|Wo ist die Toilette?
+¿Dónde está …?|Wo ist …?
+¿Te gusta …?|Magst du …? / Gefällt dir …?
+¿Qué haces en tu tiempo libre?|Was machst du in deiner Freizeit?
+¿Tienes hermanos?|Hast du Geschwister?
+¿Estás de vacaciones?|Bist du im Urlaub?
+¿Cuánto tiempo te quedas?|Wie lange bleibst du?
+¿Qué me recomiendas?|Was empfiehlst du mir?
+¿Qué te parece?|Was hältst du davon?
+¿Te apetece un café?|Hast du Lust auf einen Kaffee?
+#Verstehen & Sprache
+No entiendo.|Ich verstehe nicht.
+¿Puedes repetir, por favor?|Kannst du das bitte wiederholen?
+Más despacio, por favor.|Langsamer, bitte.
+Hablo un poco de español.|Ich spreche ein bisschen Spanisch.
+Estoy aprendiendo español.|Ich lerne Spanisch.
+Mi español no es muy bueno.|Mein Spanisch ist nicht sehr gut.
+Hablas muy bien alemán.|Du sprichst sehr gut Deutsch.
+No sé.|Ich weiß nicht.
+el idioma|die Sprache
+el español|Spanisch (Sprache)
+el alemán|Deutsch (Sprache)
+el inglés|Englisch
+#Menschen & Familie
+la familia|die Familie
+el padre|der Vater
+la madre|die Mutter
+los padres|die Eltern
+el hijo|der Sohn
+la hija|die Tochter
+los hijos|die Kinder (eigene)
+el hermano|der Bruder
+la hermana|die Schwester
+el abuelo|der Großvater
+la abuela|die Großmutter
+el tío|der Onkel
+la tía|die Tante
+el marido|der Ehemann
+la mujer|die Frau / Ehefrau
+el novio|der Freund (Partner)
+la novia|die Freundin (Partnerin)
+la pareja|der Partner / das Paar
+el amigo / la amiga|der Freund / die Freundin
+el compañero|der Kollege / Mitbewohner
+el niño / la niña|der Junge / das Mädchen (Kind)
+la gente|die Leute
+el perro|der Hund
+casado / casada|verheiratet
+soltero / soltera|ledig
+Tengo dos hijos.|Ich habe zwei Kinder.
+yo|ich
+tú|du
+él|er
+ella|sie (Singular)
+usted|Sie (Höflichkeitsform)
+nosotros|wir
+ellos|sie (Plural)
+mi|mein(e)
+tu|dein(e)
+su|sein(e) / ihr(e) / Ihr(e)
+#Herkunft & Wohnen
+el país|das Land (Staat)
+la ciudad|die Stadt
+la casa|das Haus / Zuhause
+el barrio|das Viertel
+la calle|die Straße
+Alemania|Deutschland
+alemán / alemana|deutsch / Deutsche(r)
+Suiza|die Schweiz
+España|Spanien
+español / española|spanisch / Spanier(in)
+México|Mexiko
+vivir|wohnen / leben
+Vivo en …|Ich wohne in …
+la playa|der Strand
+el mar|das Meer
+cerca|nah
+lejos|weit weg
+aquí|hier
+allí|dort
+#Arbeit & Studium
+el trabajo|die Arbeit
+trabajar|arbeiten
+Trabajo como …|Ich arbeite als …
+la empresa|die Firma
+la oficina|das Büro
+el jefe / la jefa|der Chef / die Chefin
+estudiar|studieren / lernen
+la universidad|die Universität
+la escuela|die Schule
+el estudiante|der Student
+el profesor / la profesora|der Lehrer / die Lehrerin
+el médico / la médica|der Arzt / die Ärztin
+jubilado|in Rente
+el dinero|das Geld
+el móvil|das Handy (Spanien)
+#Freizeit & Hobbys
+el tiempo libre|die Freizeit
+el fin de semana|das Wochenende
+las vacaciones|der Urlaub / die Ferien
+el viaje|die Reise
+viajar|reisen
+leer|lesen
+el libro|das Buch
+la música|die Musik
+escuchar música|Musik hören
+bailar|tanzen
+el cine|das Kino
+la película|der Film
+ver la tele|fernsehen
+el deporte|der Sport
+hacer deporte|Sport treiben
+jugar|spielen
+el fútbol|der Fußball
+correr|laufen / joggen
+nadar|schwimmen
+caminar|spazieren gehen / wandern
+cocinar|kochen
+el museo|das Museum
+la fiesta|die Party / das Fest
+salir|ausgehen / hinausgehen
+quedar con amigos|sich mit Freunden treffen
+Me gusta …|Ich mag … / Mir gefällt …
+Me encanta …|Ich liebe … (etwas)
+No me gusta …|Ich mag … nicht
+#Essen & Trinken
+la comida|das Essen
+la bebida|das Getränk
+comer|essen
+beber|trinken
+el desayuno|das Frühstück
+la cena|das Abendessen
+el restaurante|das Restaurant
+el bar|die Bar / Kneipe
+La cuenta, por favor.|Die Rechnung, bitte.
+la carta|die Speisekarte
+el agua|das Wasser
+el café|der Kaffee
+el té|der Tee
+la cerveza|das Bier
+el vino|der Wein
+el vino tinto|der Rotwein
+el vino blanco|der Weißwein
+la leche|die Milch
+el pan|das Brot
+el queso|der Käse
+la carne|das Fleisch
+el pescado|der Fisch
+el jamón|der Schinken
+la ensalada|der Salat
+el postre|der Nachtisch
+el helado|das Eis (Speiseeis)
+la tapa|die Tapa (Häppchen)
+rico / rica|lecker
+vegetariano|vegetarisch
+Tengo hambre.|Ich habe Hunger.
+Tengo sed.|Ich habe Durst.
+Quisiera …|Ich hätte gern …
+#Wetter & Jahreszeiten
+el tiempo|das Wetter / die Zeit
+¿Qué tiempo hace?|Wie ist das Wetter?
+Hace calor.|Es ist heiß.
+Hace frío.|Es ist kalt.
+Hace sol.|Die Sonne scheint.
+Hace buen tiempo.|Es ist schönes Wetter.
+Hace viento.|Es ist windig.
+Llueve.|Es regnet.
+la lluvia|der Regen
+el sol|die Sonne
+el verano|der Sommer
+el invierno|der Winter
+la primavera|der Frühling
+el otoño|der Herbst
+#Zeit & Tage
+hoy|heute
+mañana|morgen
+ayer|gestern
+la mañana|der Morgen / Vormittag
+la tarde|der Nachmittag / frühe Abend
+la noche|die Nacht / der Abend
+el día|der Tag
+la semana|die Woche
+el mes|der Monat
+el año|das Jahr
+la hora|die Stunde / Uhrzeit
+ahora|jetzt
+luego|später / dann
+antes|vorher / früher
+después|danach
+siempre|immer
+nunca|nie
+a veces|manchmal
+ya|schon
+pronto|bald
+tarde|spät
+todos los días|jeden Tag
+el cumpleaños|der Geburtstag
+Son las tres.|Es ist drei Uhr.
+el lunes|der Montag
+el martes|der Dienstag
+el miércoles|der Mittwoch
+el jueves|der Donnerstag
+el viernes|der Freitag
+el sábado|der Samstag
+el domingo|der Sonntag
+enero|Januar
+febrero|Februar
+marzo|März
+abril|April
+mayo|Mai
+junio|Juni
+julio|Juli
+agosto|August
+septiembre|September
+octubre|Oktober
+noviembre|November
+diciembre|Dezember
+#Zahlen
+cero|null
+uno|eins
+dos|zwei
+tres|drei
+cuatro|vier
+cinco|fünf
+seis|sechs
+siete|sieben
+ocho|acht
+nueve|neun
+diez|zehn
+veinte|zwanzig
+treinta|dreißig
+cuarenta|vierzig
+cincuenta|fünfzig
+cien|hundert
+mil|tausend
+#Gefühle & Befinden
+Estoy cansado.|Ich bin müde.
+contento|zufrieden / froh
+feliz|glücklich
+triste|traurig
+nervioso|nervös
+aburrido|gelangweilt / langweilig
+enfermo|krank
+tranquilo|ruhig / entspannt
+tener miedo|Angst haben
+tener prisa|es eilig haben
+tener razón|recht haben
+tener ganas de …|Lust haben auf …
+Me duele la cabeza.|Ich habe Kopfschmerzen.
+#Wichtige Verben
+ser|sein (Eigenschaft, Herkunft)
+estar|sein (Zustand, Ort)
+tener|haben
+hay|es gibt
+hacer|machen / tun
+ir|gehen / fahren
+venir|kommen
+poder|können / dürfen
+querer|wollen / lieben
+saber|wissen / können (gelernt)
+conocer|kennen / kennenlernen
+decir|sagen
+hablar|sprechen
+dar|geben
+ver|sehen
+mirar|anschauen
+oír|hören
+entender|verstehen
+pensar|denken
+creer|glauben
+gustar|gefallen
+necesitar|brauchen
+buscar|suchen
+encontrar|finden
+llamar|anrufen / rufen
+llamarse|heißen
+esperar|warten / hoffen
+llegar|ankommen
+volver|zurückkommen
+empezar|anfangen
+comprar|kaufen
+pagar|bezahlen
+tomar|nehmen / trinken
+dormir|schlafen
+conducir|Auto fahren
+escribir|schreiben
+preguntar|fragen
+contestar|antworten
+ayudar|helfen
+aprender|lernen
+recordar|sich erinnern
+olvidar|vergessen
+perder|verlieren / verpassen
+quedarse|bleiben
+sentirse|sich fühlen
+visitar|besuchen
+descansar|sich ausruhen
+invitar|einladen
+probar|probieren
+tener que …|… müssen
+voy a …|ich werde (gleich) …
+#Eigenschaften & Farben
+bueno|gut
+malo|schlecht
+grande|groß
+pequeño|klein
+nuevo|neu
+viejo|alt
+joven|jung
+bonito|schön / hübsch
+guapo|gutaussehend
+alto|groß / hoch
+bajo|klein / niedrig
+caro|teuer
+barato|billig
+fácil|einfach / leicht
+difícil|schwierig
+importante|wichtig
+interesante|interessant
+divertido|lustig / unterhaltsam
+simpático|sympathisch / nett
+amable|freundlich
+caliente|heiß (Speisen, Dinge)
+frío|kalt
+rápido|schnell
+lento|langsam
+mejor|besser
+favorito|Lieblings-
+famoso|berühmt
+increíble|unglaublich
+rojo|rot
+azul|blau
+verde|grün
+amarillo|gelb
+negro|schwarz
+blanco|weiß
+#Kleine Wörter
+y|und
+o|oder
+pero|aber
+porque|weil
+también|auch
+tampoco|auch nicht
+muy|sehr
+mucho|viel
+poco|wenig
+un poco|ein bisschen
+más|mehr
+menos|weniger
+bastante|ziemlich / genug
+demasiado|zu viel / zu sehr
+todo|alles
+nada|nichts
+algo|etwas
+alguien|jemand
+nadie|niemand
+con|mit
+sin|ohne
+para|für / um zu
+de|von / aus
+en|in / an / auf
+desde|seit / ab
+hasta|bis
+así|so
+entonces|dann / also
+pues|also / nun ja
+o sea|das heißt
+es que …|es ist so, dass …
+¿verdad?|oder? / nicht wahr?
+solo|nur
+casi|fast
+otra vez|noch einmal
+juntos|zusammen
+por ejemplo|zum Beispiel
+en serio|im Ernst
+de verdad|wirklich
+este / esta|dieser / diese
+eso|das
+#Unterwegs
+el aeropuerto|der Flughafen
+el avión|das Flugzeug
+el tren|der Zug
+la estación|der Bahnhof
+el autobús|der Bus
+el coche|das Auto (Spanien)
+el taxi|das Taxi
+el billete|die Fahrkarte / das Ticket
+el hotel|das Hotel
+la habitación|das Zimmer
+la maleta|der Koffer
+la tienda|der Laden
+el supermercado|der Supermarkt
+el mercado|der Markt
+la farmacia|die Apotheke
+el hospital|das Krankenhaus
+el banco|die Bank
+la iglesia|die Kirche
+la plaza|der Platz
+el parque|der Park
+el centro|das Zentrum
+a la derecha|rechts
+a la izquierda|links
+todo recto|geradeaus
+la isla|die Insel
+el río|der Fluss
+¿Está lejos?|Ist es weit?
+Estoy de vacaciones.|Ich bin im Urlaub.
+Es mi primera vez aquí.|Ich bin zum ersten Mal hier.
+Llevo … días aquí.|Ich bin seit … Tagen hier.
+#Im Gespräch
+Me gusta mucho.|Es gefällt mir sehr.
+Creo que sí.|Ich glaube schon.
+Creo que no.|Ich glaube nicht.
+Depende.|Kommt darauf an.
+Tienes razón.|Du hast recht.
+Estoy de acuerdo.|Ich stimme zu.
+Cuéntame.|Erzähl mal.
+¡Qué fuerte!|Krass! / Unglaublich!
+Me encanta este lugar.|Ich liebe diesen Ort.
+Te invito.|Ich lade dich ein.
+Ha sido un placer.|Es war mir ein Vergnügen.
+Me tengo que ir.|Ich muss los.
+Ya es tarde.|Es ist schon spät.
+¡Que te vaya bien!|Mach's gut!
+¡Buen viaje!|Gute Reise!
+¡Que lo pases bien!|Viel Spaß!
+¡Suerte!|Viel Glück!
+`;
+
+/* =========================================================
+   Lesehilfe: spanische Rechtschreibung → deutsche Umschrift
+   ========================================================= */
+// PRON-START
+const PRON = (() => {
+  const ACC = {'á':'a','é':'e','í':'i','ó':'o','ú':'u','ü':'u'};
+  const VOW = 'aeiouáéíóúü';
+  const strong = s => 'aeoáéíóú'.includes(s);
+  const isV = ch => !!ch && VOW.includes(ch);
+  function units(w){
+    const u = [];
+    for (let i = 0; i < w.length; i++){
+      const c = w[i], n = w[i+1], n2 = w[i+2];
+      if (c==='c' && n==='h'){ u.push({t:'C',s:'ch'}); i++; continue; }
+      if (c==='l' && n==='l'){ u.push({t:'C',s:'ll'}); i++; continue; }
+      if (c==='r' && n==='r'){ u.push({t:'C',s:'rr'}); i++; continue; }
+      if (c==='q' && n==='u'){ u.push({t:'C',s:'qu'}); i++; continue; }
+      if (c==='g' && n==='u' && n2 && 'eiéí'.includes(n2)){ u.push({t:'C',s:'gu'}); i++; continue; }
+      if (c==='y'){ u.push({t: isV(n) ? 'C' : 'V', s:'y'}); continue; }
+      u.push({t: isV(c) ? 'V' : 'C', s:c});
+    }
+    return u;
+  }
+  const insep = (a,b) => 'pbcfgtdk'.includes(a.s) && a.s.length===1 && 'rl'.includes(b.s) && b.s.length===1 && !(a.s==='d' && b.s==='l');
+  function syllableStarts(u){
+    const nuc = [];
+    let i = 0;
+    while (i < u.length){
+      if (u[i].t==='V'){
+        const s = i; i++;
+        while (i < u.length && u[i].t==='V' && !(strong(u[i].s) && strong(u[i-1].s))) i++;
+        nuc.push([s, i-1]);
+      } else i++;
+    }
+    const starts = [0];
+    for (let k = 0; k < nuc.length-1; k++){
+      const cons = [];
+      for (let j = nuc[k][1]+1; j < nuc[k+1][0]; j++) cons.push(j);
+      let st;
+      if (cons.length===0) st = nuc[k+1][0];
+      else if (cons.length===1) st = cons[0];
+      else if (cons.length===2) st = insep(u[cons[0]],u[cons[1]]) ? cons[0] : cons[1];
+      else if (cons.length===3) st = insep(u[cons[1]],u[cons[2]]) ? cons[1] : cons[2];
+      else st = cons[2];
+      starts.push(st);
+    }
+    return starts;
+  }
+  function render(u, spain){
+    const out = [];
+    for (let i = 0; i < u.length; i++){
+      const x = u[i], nx = u[i+1], ns = nx ? nx.s : '';
+      if (x.t==='C'){
+        const soft = 'eiéí'.includes(ns) && ns !== '';
+        out.push({
+          c: soft ? (spain?'th':'s') : 'k', z: spain?'th':'s',
+          g: soft ? 'ch' : 'g', gu:'g', qu:'k', j:'ch', ll:'j', y:'j', 'ñ':'nj',
+          h:'', ch:'tsch', v:'b', x:'ks', w:'u'
+        }[x.s] ?? x.s);
+      } else {
+        const base = ACC[x.s] || (x.s==='y' ? 'i' : x.s);
+        const weak = !strong(x.s);
+        const nextV = nx && nx.t==='V' && !(strong(nx.s) && strong(x.s)) ? nx : null;
+        const pv = u[i-1];
+        const prevV = pv && pv.t==='V' && !(strong(pv.s) && strong(x.s)) ? pv : null;
+        let o = base;
+        if (weak && nextV){
+          if (base==='i') o = 'j';
+          else if (base==='u' && !['i','y'].includes(nextV.s)) o = 'w';
+        } else if (weak && prevV && strong(prevV.s)){
+          const pb = ACC[prevV.s] || prevV.s;
+          if (base==='i' && (pb==='e' || pb==='o')) o = 'j';
+          if (base==='u' && pb==='e') o = "'u";
+        }
+        out.push(o);
+      }
+    }
+    return out;
+  }
+  function word(w, spain){
+    w = w.replace(/^m[eé]xic/, m => m.replace('x','j'));
+    const u = units(w);
+    if (!u.some(x => x.t==='V')) return w;
+    const r = render(u, spain);
+    const starts = syllableStarts(u);
+    const syl = starts.map((s,k) => [s, k+1 < starts.length ? starts[k+1] : u.length]);
+    let stress = -1;
+    if (syl.length > 1){
+      stress = syl.findIndex(([a,b]) => u.slice(a,b).some(x => 'áéíóú'.includes(x.s)));
+      if (stress < 0) stress = 'aeiouns'.includes(w[w.length-1]) ? syl.length-2 : syl.length-1;
+    }
+    return syl.map(([a,b],k) => { const t = r.slice(a,b).join(''); return k===stress ? t.toUpperCase() : t; }).join('-');
+  }
+  function of(text, spain){
+    return text.toLowerCase()
+      .split(/([a-záéíóúüñ]+)/)
+      .map(tok => /^[a-záéíóúüñ]+$/.test(tok) ? word(tok, spain) : tok.replace(/[¿?¡!.,;:"()]/g,''))
+      .join('').replace(/\s+/g,' ').trim();
+  }
+  return { of };
+})();
+// PRON-END
+
+/* =========================================================
+   Daten & Speicher
+   ========================================================= */
+const KEY = 'charla-es-v1';
+const MIN = 60e3, DAY = 864e5;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const defaults = () => ({dir:'es-de', newPer:20, order:'random', showAnswer:true, showPron:true, variant:'latam', autoSpeak:false, rate:0.9, cats:null});
+
+const CATS = [], VOCAB = [], BYID = new Map();
+function addWord(es, de, cat){
+  es = es.trim(); de = de.trim();
+  if (!es || !de || BYID.has(es)) return false;
+  if (!CATS.includes(cat)) CATS.push(cat);
+  const v = {id:es, es, de, cat};
+  VOCAB.push(v); BYID.set(es, v); return true;
+}
+(function parse(){
+  let cat = 'Allgemein';
+  DATA.split('\n').forEach(line => {
+    line = line.trim(); if (!line) return;
+    if (line[0]==='#'){ cat = line.slice(1).trim(); return; }
+    const [es, de] = line.split('|'); addWord(es||'', de||'', cat);
+  });
+})();
+
+function load(){
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY));
+    if (s && s.cards) return {cards:s.cards, custom:s.custom||[], log:s.log||{}, settings:Object.assign(defaults(), s.settings||{})};
+  } catch(e){}
+  return {cards:{}, custom:[], log:{}, settings:defaults()};
+}
+let state = load();
+state.custom.forEach(w => addWord(w.es, w.de, w.cat || 'Eigene Wörter'));
+const S = () => state.settings;
+function save(){
+  try { localStorage.setItem(KEY, JSON.stringify(state)); }
+  catch(e){ toast('Speichern fehlgeschlagen – bitte CSV exportieren, um den Fortschritt zu sichern.'); }
+}
+const fresh = () => ({seen:0, yes:0, half:0, no:0, ease:2.5, interval:0, due:0, last:0, lapses:0});
+const cardOf = id => state.cards[id] || fresh();
+const ensure = id => state.cards[id] || (state.cards[id] = fresh());
+const pron = es => PRON.of(es, S().variant==='spain');
+function dayKey(t = Date.now()){ const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function status(c){ if (!c || !c.seen) return 'neu'; if (c.interval < 1) return 'lernend'; if (c.interval < 21) return 'jung'; return 'gefestigt'; }
+const STATUS_LABEL = {neu:'Neu', lernend:'In Arbeit', jung:'Jung', gefestigt:'Gefestigt'};
+
+/* =========================================================
+   Wiederholungs-Logik (vereinfachtes SM-2)
+   nicht → in 1 Min wieder · halb → 10 Min / 1 Tag / Intervall ×1,2
+   gewusst → Intervall wächst mit dem Faktor der Karte
+   ========================================================= */
+function dueInDays(d, now){ const t = new Date(now); t.setHours(0,0,0,0); t.setDate(t.getDate() + Math.max(1, Math.round(d))); return t.getTime(); }
+function schedule(c, r, now = Date.now()){
+  c.seen++; c.last = now;
+  if (r==='no'){
+    c.no++; c.lapses++; c.ease = Math.max(1.3, c.ease - .2); c.interval = 0; c.due = now + MIN;
+  } else if (r==='half'){
+    c.half++; c.ease = Math.max(1.3, c.ease - .15);
+    if (c.interval < 1){
+      if (c.interval > 0){ c.interval = 1; c.due = dueInDays(1, now); }
+      else { c.interval = 10/1440; c.due = now + 10*MIN; }
+    } else { c.interval = Math.max(1, Math.round(c.interval*1.2)); c.due = dueInDays(c.interval, now); }
+  } else {
+    c.yes++;
+    if (c.interval < 1) c.interval = c.seen===1 ? 4 : 1;
+    else { c.interval = Math.min(365, Math.round(c.interval * c.ease)); c.ease = Math.min(3, c.ease + .05); }
+    c.due = dueInDays(c.interval, now);
+  }
+  c.ease = Math.round(c.ease*100)/100;
+}
+function fmtWait(ms){
+  const m = Math.round(ms/MIN);
+  if (m < 60) return `${Math.max(1,m)} Min`;
+  const h = Math.round(ms/36e5);
+  if (h < 24) return `${h} Std`;
+  const d = Math.round(ms/DAY);
+  if (d < 31) return d===1 ? '1 Tag' : `${d} Tage`;
+  const mo = Math.round(d/30);
+  return mo===1 ? '1 Monat' : `${mo} Monate`;
+}
+function preview(id, r){ const c = {...cardOf(id)}; const now = Date.now(); schedule(c, r, now); return c.interval >= 1 ? fmtWait(c.interval*DAY) : fmtWait(c.due - now); }
+
+/* =========================================================
+   Sitzung
+   ========================================================= */
+let queue = [], current = null, sess = {yes:0, half:0, no:0}, undo = null, dirty = true;
+function pool(){ return VOCAB.filter(v => !S().cats || S().cats.includes(v.cat)); }
+function shuffle(a){ for (let i = a.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+function newIds(n, exclude = new Set()){
+  let fresh = pool().filter(v => !cardOf(v.id).seen && !exclude.has(v.id));
+  if (S().order==='random') shuffle(fresh);
+  return fresh.slice(0, n).map(v => v.id);
+}
+function buildQueue(){
+  const now = Date.now();
+  const due = pool().filter(v => { const c = state.cards[v.id]; return c && c.seen && c.due <= now; })
+    .sort((a,b) => state.cards[a.id].due - state.cards[b.id].due).map(v => v.id);
+  const nw = newIds(S().newPer);
+  queue = [];
+  while (due.length || nw.length){
+    if (due.length) queue.push(due.shift());
+    if (due.length) queue.push(due.shift());
+    if (nw.length) queue.push(nw.shift());
+  }
+  sess = {yes:0, half:0, no:0}; undo = null; current = null; dirty = false;
+  showCard();
+}
+function updateCounts(){
+  let n = 0, l = 0, r = 0;
+  queue.forEach(id => { const c = cardOf(id); if (!c.seen) n++; else if (c.interval < 1) l++; else r++; });
+  $('#cnt-new').textContent = n; $('#cnt-learn').textContent = l; $('#cnt-rev').textContent = r;
+  $('#undo').disabled = !undo;
+}
+
+const SPEAKER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+const cardEl = $('#card'), doneEl = $('#done');
+let revealed = true;
+
+function showCard(){
+  updateCounts();
+  if (!queue.length){ current = null; renderDone(); return; }
+  const id = queue[0];
+  if (!current || current.id !== id){
+    const d = S().dir==='mix' ? (Math.random() < .5 ? 'es-de' : 'de-es') : S().dir;
+    current = {id, dir:d};
+    revealed = S().showAnswer;
+  }
+  doneEl.hidden = true; cardEl.hidden = false;
+  $('#rate').querySelectorAll('button').forEach(b => b.disabled = false);
+  renderCard();
+  cardEl.style.transition = 'none'; cardEl.style.transform = ''; cardEl.style.opacity = '';
+  cardEl.classList.remove('enter'); void cardEl.offsetWidth; cardEl.classList.add('enter');
+  requestAnimationFrame(() => cardEl.style.transition = '');
+  ['no','half','yes'].forEach(r => $('#pv-'+r).textContent = `${{no:'←',half:'↑',yes:'→'}[r]} ${preview(id, r)}`);
+  if (S().autoSpeak && (current.dir==='es-de' || revealed)) speak(BYID.get(id).es);
+}
+function renderCard(){
+  const v = BYID.get(current.id), esFirst = current.dir==='es-de';
+  const pr = S().showPron ? `<div class="pron" lang="de">${esc(pron(v.es))}</div>` : '';
+  const spk = `<button class="speak" data-speak aria-label="Spanisch vorlesen">${SPEAKER}</button>`;
+  const esBlock = (cls) => `<div class="${cls}" lang="es">${esc(v.es)}</div>${pr}${spk}`;
+  const deBlock = (cls) => `<div class="${cls}">${esc(v.de)}</div>`;
+  const top = esFirst ? esBlock('prompt') : deBlock('prompt');
+  const bottom = revealed ? (esFirst ? deBlock('answer') : esBlock('answer'))
+                          : `<button class="reveal" data-reveal>Antippen, um die Lösung zu sehen</button>`;
+  cardEl.innerHTML = `
+    <div class="card-top"><span class="chip">${esc(v.cat)}</span><span>${esFirst ? 'ES → DE' : 'DE → ES'}</span></div>
+    <div class="side">${top}</div>
+    <div class="divider"></div>
+    <div class="side">${bottom}</div>
+    <div class="stamp yes">¡Sí!</div><div class="stamp no">¡No!</div><div class="stamp half">Más o menos</div>`;
+}
+function reveal(){
+  if (!current || revealed) return;
+  revealed = true; renderCard();
+  if (S().autoSpeak && current.dir==='de-es') speak(BYID.get(current.id).es);
+}
+function renderDone(){
+  cardEl.hidden = true; doneEl.hidden = false;
+  $('#rate').querySelectorAll('button').forEach(b => b.disabled = true);
+  const total = sess.yes + sess.half + sess.no;
+  const now = Date.now();
+  const nextDue = pool().map(v => state.cards[v.id]).filter(c => c && c.seen && c.due > now).map(c => c.due).sort((a,b) => a-b)[0];
+  const newLeft = pool().filter(v => !cardOf(v.id).seen).length;
+  const reviewable = pool().filter(v => cardOf(v.id).seen).length;
+  doneEl.innerHTML = `
+    <h2>${total ? '¡Muy bien!' : '¡Hola!'}</h2>
+    ${total ? `<p>Runde geschafft – ${total} Karten.</p><div class="tally"><span class="y">✓ ${sess.yes}</span><span class="h">~ ${sess.half}</span><span class="x">✗ ${sess.no}</span></div>`
+            : `<p>Gerade ist nichts fällig.</p>`}
+    <p>${nextDue ? `Nächste Wiederholung in ${fmtWait(nextDue - now)}.` : ''} ${newLeft} neue Wörter warten noch.</p>
+    <button class="btn primary" id="more-new" ${newLeft ? '' : 'disabled'}>10 neue Wörter lernen</button>
+    <button class="btn" id="more-ahead" ${reviewable ? '' : 'disabled'}>Nächste 20 Wiederholungen vorziehen</button>`;
+  $('#more-new').onclick = () => { queue.push(...newIds(10, new Set(queue))); showCard(); };
+  $('#more-ahead').onclick = () => {
+    queue.push(...pool().filter(v => cardOf(v.id).seen).sort((a,b) => cardOf(a.id).due - cardOf(b.id).due).slice(0,20).map(v => v.id));
+    showCard();
+  };
+}
+function rate(r){
+  if (!current) return;
+  const id = current.id, dk = dayKey();
+  undo = {id, prev: state.cards[id] ? {...state.cards[id]} : null, queue:[...queue], dk, sess:{...sess}, current:{...current}};
+  const c = ensure(id);
+  schedule(c, r);
+  state.log[dk] = (state.log[dk]||0) + 1;
+  sess[r]++;
+  queue.shift();
+  if (c.due - Date.now() < 20*MIN) queue.splice(Math.min(queue.length, r==='no' ? 3 : 6), 0, id);
+  current = null;
+  save(); showCard();
+}
+function fly(r){
+  if (!current) return;
+  const dx = {no:-1, yes:1, half:0}[r], dy = r==='half' ? -1 : 0;
+  cardEl.style.transition = 'transform .22s ease, opacity .22s ease';
+  cardEl.style.transform = `translate(${dx*120}%, ${dy*80}%) rotate(${dx*14}deg)`;
+  cardEl.style.opacity = '0';
+  setTimeout(() => rate(r), 200);
+}
+function doUndo(){
+  if (!undo) return;
+  if (undo.prev) state.cards[undo.id] = undo.prev; else delete state.cards[undo.id];
+  state.log[undo.dk] = Math.max(0, (state.log[undo.dk]||1) - 1);
+  queue = undo.queue; sess = undo.sess; current = undo.current; revealed = true;
+  undo = null; save(); showCard();
+}
+
+/* ---------- Wischen ---------- */
+(function swipe(){
+  let sx = 0, sy = 0, dx = 0, dy = 0, pid = null;
+  const T = 90;
+  const stamps = () => ({yes:cardEl.querySelector('.stamp.yes'), no:cardEl.querySelector('.stamp.no'), half:cardEl.querySelector('.stamp.half')});
+  cardEl.addEventListener('pointerdown', e => {
+    if (e.target.closest('button') || !current) return;
+    pid = e.pointerId; sx = e.clientX; sy = e.clientY; dx = dy = 0;
+    cardEl.setPointerCapture(pid); cardEl.style.transition = 'none';
+  });
+  cardEl.addEventListener('pointermove', e => {
+    if (e.pointerId !== pid) return;
+    dx = e.clientX - sx; dy = e.clientY - sy;
+    cardEl.style.transform = `translate(${dx}px, ${Math.min(dy, 30)}px) rotate(${dx/22}deg)`;
+    const st = stamps(), horiz = Math.abs(dx) > Math.abs(dy);
+    if (st.yes){
+      st.yes.style.opacity = horiz ? Math.max(0, Math.min(1, dx/T)) : 0;
+      st.no.style.opacity = horiz ? Math.max(0, Math.min(1, -dx/T)) : 0;
+      st.half.style.opacity = !horiz ? Math.max(0, Math.min(1, -dy/T)) : 0;
+    }
+  });
+  const end = e => {
+    if (e.pointerId !== pid) return;
+    pid = null;
+    let r = null;
+    if (Math.abs(dx) > Math.abs(dy)){ if (dx > T) r = 'yes'; else if (dx < -T) r = 'no'; }
+    else if (dy < -T) r = 'half';
+    cardEl.style.transition = '';
+    if (r){ fly(r); return; }
+    cardEl.style.transform = '';
+    Object.values(stamps()).forEach(s => s && (s.style.opacity = 0));
+    if (Math.abs(dx) < 6 && Math.abs(dy) < 6) reveal();
+  };
+  cardEl.addEventListener('pointerup', end);
+  cardEl.addEventListener('pointercancel', end);
+})();
+cardEl.addEventListener('click', e => {
+  if (e.target.closest('[data-speak]')) speak(BYID.get(current.id).es);
+  if (e.target.closest('[data-reveal]')) reveal();
+});
+$('#rate').addEventListener('click', e => { const b = e.target.closest('button[data-r]'); if (b && !b.disabled) fly(b.dataset.r); });
+$('#undo').onclick = doUndo;
+document.addEventListener('keydown', e => {
+  if (!$('#view-learn').classList.contains('active') || e.target.matches('input,select,textarea')) return;
+  const k = e.key;
+  if (k==='ArrowLeft' || k==='1'){ e.preventDefault(); fly('no'); }
+  else if (k==='ArrowUp' || k==='2'){ e.preventDefault(); fly('half'); }
+  else if (k==='ArrowRight' || k==='3'){ e.preventDefault(); fly('yes'); }
+  else if (k===' '){ e.preventDefault(); if (current) speak(BYID.get(current.id).es); }
+  else if (k==='Enter'){ reveal(); }
+  else if (k==='z' || k==='Backspace'){ doUndo(); }
+});
+
+/* =========================================================
+   Vorlesen (Web Speech API)
+   ========================================================= */
+let voices = [];
+function loadVoices(){
+  if (!('speechSynthesis' in window)){ $('#voice-info').textContent = 'Dieser Browser kann nicht vorlesen.'; return; }
+  voices = speechSynthesis.getVoices();
+  const v = pickVoice();
+  $('#voice-info').textContent = v ? `${v.name} (${v.lang})` : 'Keine spanische Stimme gefunden – installiere eine in den Sprach-Einstellungen deines Systems.';
+}
+function pickVoice(){
+  const es = voices.filter(v => /^es([-_]|$)/i.test(v.lang));
+  const pref = S().variant==='spain' ? ['es-ES'] : ['es-MX','es-US','es-419','es-CO','es-AR'];
+  for (const p of pref){
+    const hit = es.find(v => v.lang.replace('_','-').toLowerCase()===p.toLowerCase());
+    if (hit) return hit;
+  }
+  return es[0] || null;
+}
+function speak(text){
+  if (!('speechSynthesis' in window)){ toast('Vorlesen wird von diesem Browser nicht unterstützt.'); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text.replace(/…/g,' ').replace(/\s*\/\s*/g,', ').replace(/\s+/g,' ').trim());
+  const v = pickVoice();
+  if (v){ u.voice = v; u.lang = v.lang; } else u.lang = S().variant==='spain' ? 'es-ES' : 'es-MX';
+  u.rate = S().rate;
+  speechSynthesis.speak(u);
+}
+if ('speechSynthesis' in window){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; } else loadVoices();
+
+/* =========================================================
+   Liste, Export & Import
+   ========================================================= */
+const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+function renderList(){
+  const q = norm($('#q').value.trim()), fc = $('#f-cat').value, fs = $('#f-status').value, now = Date.now();
+  const rows = VOCAB.filter(v => {
+    const c = cardOf(v.id);
+    if (fc && v.cat !== fc) return false;
+    if (fs==='due'){ if (!(c.seen && c.due <= now)) return false; }
+    else if (fs && status(c) !== fs) return false;
+    return !q || norm(v.es).includes(q) || norm(v.de).includes(q);
+  });
+  $('#list-meta').textContent = `${rows.length} von ${VOCAB.length} Einträgen`;
+  $('#list').innerHTML = rows.map(v => {
+    const c = cardOf(v.id), st = status(c);
+    const due = c.seen ? (c.due <= now ? 'jetzt fällig' : `in ${fmtWait(c.due - now)}`) : '';
+    return `<div class="row">
+      <button class="speak small" data-say="${esc(v.id)}" aria-label="${esc(v.es)} vorlesen">${SPEAKER}</button>
+      <div><div class="r-es" lang="es">${esc(v.es)}</div>${S().showPron ? `<div class="r-pron">${esc(pron(v.es))}</div>` : ''}<div class="r-de">${esc(v.de)}</div></div>
+      <div class="r-meta"><span class="pill ${st}">${STATUS_LABEL[st]}</span>${c.seen ? `<span>✓${c.yes} ~${c.half} ✗${c.no}</span><span>${due}</span>` : ''}</div>
+    </div>`;
+  }).join('');
+}
+$('#list').addEventListener('click', e => { const b = e.target.closest('[data-say]'); if (b) speak(b.dataset.say); });
+['#q','#f-cat','#f-status'].forEach(s => $(s).addEventListener('input', renderList));
+
+function download(name, text, type){
+  const blob = new Blob([text], {type});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+const stamp = t => { if (!t) return ''; const d = new Date(t); return `${dayKey(t)} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
+const deDate = t => new Date(t).toLocaleDateString('de-DE');
+const HEAD = ['spanisch','deutsch','kategorie','lesehilfe','stand','gesehen','gewusst','halb','nicht_gewusst','intervall_tage','faktor','faellig','zuletzt'];
+function exportCSV(){
+  const q = s => '"' + String(s).replace(/"/g,'""') + '"';
+  const rows = VOCAB.map(v => { const c = cardOf(v.id);
+    return [v.es, v.de, v.cat, pron(v.es), STATUS_LABEL[status(c)], c.seen, c.yes, c.half, c.no,
+            String(Math.round(c.interval*1000)/1000).replace('.',','), String(c.ease).replace('.',','), c.seen ? stamp(c.due) : '', stamp(c.last)]; });
+  download(`spanisch-vokabeln-${dayKey()}.csv`, '\ufeff' + [HEAD, ...rows].map(r => r.map(q).join(';')).join('\r\n'), 'text/csv;charset=utf-8');
+  toast('CSV exportiert.');
+}
+function exportTXT(){
+  const now = Date.now();
+  let out = `Spanisch Small-Talk-Vokabeln – Export vom ${deDate(now)}\n${VOCAB.length} Einträge\n`;
+  CATS.forEach(cat => {
+    const list = VOCAB.filter(v => v.cat===cat); if (!list.length) return;
+    out += `\n== ${cat} ==\n`;
+    list.forEach(v => { const c = cardOf(v.id);
+      const info = c.seen ? `${STATUS_LABEL[status(c)]} · gewusst ${c.yes}× · halb ${c.half}× · nicht ${c.no}× · fällig ${deDate(c.due)}` : 'Neu';
+      out += `${v.es}  [${pron(v.es)}]  =  ${v.de}   | ${info}\n`; });
+  });
+  download(`spanisch-vokabeln-${dayKey()}.txt`, out, 'text/plain;charset=utf-8');
+  toast('TXT exportiert.');
+}
+function parseCSV(text){
+  text = text.replace(/^\ufeff/, '');
+  const first = text.split(/\r?\n/)[0];
+  const d = [';','\t',','].map(ch => [ch, first.split(ch).length]).sort((a,b) => b[1]-a[1])[0][0];
+  const rows = []; let row = [], f = '', inQ = false;
+  for (let i = 0; i < text.length; i++){
+    const ch = text[i];
+    if (inQ){ if (ch==='"'){ if (text[i+1]==='"'){ f += '"'; i++; } else inQ = false; } else f += ch; }
+    else if (ch==='"') inQ = true;
+    else if (ch===d){ row.push(f); f = ''; }
+    else if (ch==='\n' || ch==='\r'){ if (ch==='\r' && text[i+1]==='\n') i++; row.push(f); rows.push(row); row = []; f = ''; }
+    else f += ch;
+  }
+  if (f || row.length){ row.push(f); rows.push(row); }
+  return rows.filter(r => r.some(x => x.trim()));
+}
+function importCSV(text){
+  const rows = parseCSV(text);
+  if (!rows.length){ toast('Die Datei ist leer.'); return; }
+  const h = rows[0].map(x => x.trim().toLowerCase());
+  const hasHead = h.includes('spanisch');
+  const ix = n => hasHead ? h.indexOf(n) : ['spanisch','deutsch','kategorie'].indexOf(n);
+  const body = hasHead ? rows.slice(1) : rows;
+  const num = s => parseFloat(String(s).replace(',','.')) || 0;
+  const time = s => { s = (s||'').trim(); if (!s) return 0; const t = new Date(s.replace(' ','T')).getTime(); return isNaN(t) ? 0 : t; };
+  let added = 0, stats = 0;
+  body.forEach(r => {
+    const g = n => ix(n) >= 0 ? (r[ix(n)] || '').trim() : '';
+    const es = g('spanisch'), de = g('deutsch');
+    if (!es || !de) return;
+    if (!BYID.has(es)){ const cat = g('kategorie') || 'Eigene Wörter'; addWord(es, de, cat); state.custom.push({es, de, cat}); added++; }
+    if (hasHead && ix('gesehen') >= 0 && num(g('gesehen')) > 0){
+      state.cards[es] = {seen:num(g('gesehen')), yes:num(g('gewusst')), half:num(g('halb')), no:num(g('nicht_gewusst')),
+        ease:num(g('faktor')) || 2.5, interval:num(g('intervall_tage')), due:time(g('faellig')) || Date.now(), last:time(g('zuletzt')), lapses:num(g('nicht_gewusst'))};
+      stats++;
+    }
+  });
+  save(); dirty = true; fillCats(); renderList();
+  toast(`Import fertig: ${added} neue Wörter, ${stats} Lernstände übernommen.`);
+}
+$('#exp-csv').onclick = exportCSV; $('#exp-csv2').onclick = exportCSV; $('#exp-txt').onclick = exportTXT;
+$('#imp-btn').onclick = () => $('#imp-file').click();
+$('#imp-file').onchange = e => {
+  const file = e.target.files[0]; if (!file) return;
+  if (!confirm('Vorhandene Lernstände der Wörter in der Datei werden überschrieben. Importieren?')){ e.target.value = ''; return; }
+  const rd = new FileReader(); rd.onload = () => importCSV(rd.result); rd.readAsText(file, 'utf-8'); e.target.value = '';
+};
+$('#add-btn').onclick = () => {
+  const es = $('#add-es').value.trim(), de = $('#add-de').value.trim();
+  if (!es || !de){ toast('Bitte Spanisch und Deutsch ausfüllen.'); return; }
+  if (BYID.has(es)){ toast('Dieses Wort ist schon in der Liste.'); return; }
+  addWord(es, de, 'Eigene Wörter'); state.custom.push({es, de, cat:'Eigene Wörter'});
+  if (S().cats && !S().cats.includes('Eigene Wörter')) S().cats.push('Eigene Wörter');
+  save(); dirty = true; fillCats(); renderList();
+  $('#add-es').value = ''; $('#add-de').value = ''; toast(`„${es}“ hinzugefügt.`);
+};
+
+/* =========================================================
+   Statistik
+   ========================================================= */
+function renderStats(){
+  const now = Date.now(), cnt = {neu:0, lernend:0, jung:0, gefestigt:0};
+  let due = 0, yes = 0, all = 0;
+  VOCAB.forEach(v => { const c = cardOf(v.id); cnt[status(c)]++; if (c.seen && c.due <= now) due++; yes += c.yes; all += c.seen; });
+  const today = state.log[dayKey()] || 0;
+  const days = [...Array(14)].map((_,i) => { const t = new Date(); t.setDate(t.getDate() - 13 + i); return {k:dayKey(t.getTime()), d:t}; });
+  const max = Math.max(1, ...days.map(d => state.log[d.k] || 0));
+  let streak = 0; for (let i = 0; ; i++){ const t = new Date(); t.setDate(t.getDate()-i); if (state.log[dayKey(t.getTime())]) streak++; else if (i > 0) break; if (i > 3650) break; }
+  const COL = {gefestigt:'var(--yes)', jung:'var(--half)', lernend:'var(--no)'};
+  $('#stats').innerHTML = `
+    <h2>Statistik</h2>
+    <div class="tiles">
+      <div class="tile"><b>${VOCAB.length - cnt.neu}</b><span>von ${VOCAB.length} Wörtern angefangen</span></div>
+      <div class="tile"><b>${cnt.gefestigt}</b><span>gefestigt (≥ 3 Wochen)</span></div>
+      <div class="tile"><b>${due}</b><span>jetzt fällig</span></div>
+      <div class="tile"><b>${today}</b><span>Karten heute</span></div>
+      <div class="tile"><b>${all ? Math.round(yes/all*100) : 0} %</b><span>gewusst (gesamt)</span></div>
+      <div class="tile"><b>${streak}</b><span>${streak===1 ? 'Tag' : 'Tage'} am Stück</span></div>
+    </div>
+    <h3>Karten der letzten 14 Tage</h3>
+    <div class="bars">${days.map(d => { const n = state.log[d.k] || 0; return `<div style="height:${n/max*100}%" ${n ? `data-n="${n}"` : ''} title="${d.d.toLocaleDateString('de-DE')}: ${n}"></div>`; }).join('')}</div>
+    <div class="barlbl">${days.map(d => `<span>${d.d.toLocaleDateString('de-DE',{weekday:'narrow'})}</span>`).join('')}</div>
+    <h3>Fortschritt nach Kategorie</h3>
+    <div class="legend"><span><i style="background:var(--yes)"></i>Gefestigt</span><span><i style="background:var(--half)"></i>Jung</span><span><i style="background:var(--no)"></i>In Arbeit</span></div>
+    ${CATS.map(cat => { const l = VOCAB.filter(v => v.cat===cat); const c = {lernend:0, jung:0, gefestigt:0, neu:0}; l.forEach(v => c[status(cardOf(v.id))]++);
+      return `<div class="prog"><div class="lbl"><span>${esc(cat)}</span><span>${l.length - c.neu}/${l.length}</span></div>
+        <div class="track">${['gefestigt','jung','lernend'].map(s => `<i style="width:${c[s]/l.length*100}%;background:${COL[s]}"></i>`).join('')}</div></div>`; }).join('')}`;
+}
+
+/* =========================================================
+   Einstellungen
+   ========================================================= */
+function fillCats(){
+  const sel = $('#f-cat'), keep = sel.value;
+  sel.innerHTML = '<option value="">Alle Kategorien</option>' + CATS.map(c => `<option>${esc(c)}</option>`).join('');
+  sel.value = keep;
+  $('#cats').innerHTML = CATS.map(c => `<label><input type="checkbox" value="${esc(c)}" ${!S().cats || S().cats.includes(c) ? 'checked' : ''}> ${esc(c)} <span class="meta" style="margin:0">(${VOCAB.filter(v => v.cat===c).length})</span></label>`).join('');
+}
+function fillSettings(){
+  const s = S();
+  $('#s-dir').value = s.dir; $('#s-new').value = s.newPer; $('#s-order').value = s.order;
+  $('#s-show').checked = s.showAnswer; $('#s-pron').checked = s.showPron; $('#s-variant').value = s.variant;
+  $('#s-auto').checked = s.autoSpeak; $('#s-rate').value = s.rate; $('#s-rate-val').textContent = `${Math.round(s.rate*100)} %`;
+  fillCats();
+}
+function bind(id, key, get, rebuild){
+  $(id).addEventListener('change', () => { S()[key] = get($(id)); save(); if (rebuild) dirty = true; if (key==='variant') loadVoices(); });
+}
+bind('#s-dir','dir', e => e.value, true);
+bind('#s-new','newPer', e => Math.max(1, Math.min(200, parseInt(e.value) || 20)), true);
+bind('#s-order','order', e => e.value, true);
+bind('#s-show','showAnswer', e => e.checked);
+bind('#s-pron','showPron', e => e.checked);
+bind('#s-variant','variant', e => e.value);
+bind('#s-auto','autoSpeak', e => e.checked);
+$('#s-rate').addEventListener('input', e => { S().rate = parseFloat(e.target.value); $('#s-rate-val').textContent = `${Math.round(S().rate*100)} %`; save(); });
+$('#voice-test').onclick = () => speak('¡Hola! ¿Qué tal? Mucho gusto.');
+$('#cats').addEventListener('change', () => {
+  const on = [...$('#cats').querySelectorAll('input:checked')].map(i => i.value);
+  S().cats = on.length === CATS.length ? null : on; save(); dirty = true;
+});
+$('#cats-all').onclick = () => { S().cats = null; save(); dirty = true; fillCats(); };
+$('#cats-none').onclick = () => { S().cats = []; save(); dirty = true; fillCats(); };
+$('#reset').onclick = () => {
+  if (!confirm('Den gesamten Lernfortschritt löschen? Eigene Wörter und Optionen bleiben erhalten. Tipp: vorher als CSV exportieren.')) return;
+  state.cards = {}; state.log = {}; save(); dirty = true; toast('Fortschritt zurückgesetzt.');
+};
+
+/* =========================================================
+   Navigation & Start
+   ========================================================= */
+function go(view){
+  document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b.dataset.view===view));
+  document.querySelectorAll('.view').forEach(s => s.classList.toggle('active', s.id==='view-'+view));
+  if (view==='learn'){ if (dirty) buildQueue(); else showCard(); }
+  if (view==='list') renderList();
+  if (view==='stats') renderStats();
+  if (view==='settings') fillSettings();
+}
+document.querySelector('nav').addEventListener('click', e => { const b = e.target.closest('button'); if (b) go(b.dataset.view); });
+let toastT;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2800); }
+fillSettings();
+buildQueue();
+</script>
+</body>
+</html>
