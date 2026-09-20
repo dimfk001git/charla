@@ -75,6 +75,9 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 .prompt{font-family:var(--display);font-weight:700;font-size:clamp(1.7rem,6.5vw,2.5rem);line-height:1.12;letter-spacing:-.015em;overflow-wrap:anywhere}
 .answer{font-family:var(--display);font-weight:500;font-size:clamp(1.25rem,4.8vw,1.7rem);line-height:1.2;overflow-wrap:anywhere}
 .pron{font-size:1.02rem;color:var(--muted);letter-spacing:.02em}
+.lit{font-size:.92rem;color:var(--muted);font-style:italic}
+.card-foot{display:flex;justify-content:center;padding-top:8px}
+.lookup{color:var(--muted);font-size:.85rem;text-underline-offset:3px;padding:4px 8px}
 .pron::before{content:"[ "}.pron::after{content:" ]"}
 .divider{height:2px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 14px);margin:4px 0}
 .speak{border:0;background:var(--blue);color:#fff;width:46px;height:46px;border-radius:50%;display:inline-grid;place-items:center;flex:none}
@@ -118,11 +121,13 @@ input[type=search],input[type=text],input[type=number],select{border:1.5px solid
 .r-es{font-weight:700}
 .r-pron{color:var(--muted);font-size:.85rem}
 .r-de{font-size:.95rem}
+.r-lit{font-size:.82rem;color:var(--muted);font-style:italic}
+.r-links{display:flex;gap:10px;justify-content:flex-end}
 .r-meta{text-align:right;font-size:.8rem;color:var(--muted);display:flex;flex-direction:column;align-items:flex-end;gap:3px}
 .pill{border-radius:999px;padding:2px 9px;font-size:.75rem;font-weight:700;background:var(--soft);color:var(--muted)}
 .pill.lernend{background:#fde3e1;color:#9c2a22}.pill.jung{background:#fff1c7;color:#7a5800}.pill.gefestigt{background:#d7f2e4;color:#17603f}.pill.aus{background:transparent;border:1px solid var(--line)}
 .tog{border:0;background:none;color:var(--muted);text-decoration:underline;text-underline-offset:2px;font-size:.78rem;padding:2px 0}
-.add{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin:6px 0 16px}
+.add{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 16px}.add .full{grid-column:1/-1}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
 .tile{background:var(--soft);border-radius:14px;padding:12px 14px}
 .tile b{display:block;font-family:var(--display);font-size:1.6rem;line-height:1.1}
@@ -210,7 +215,8 @@ input[type=range]{accent-color:var(--blue)}
           <div class="add">
             <input type="text" id="add-es" placeholder="Spanisch" lang="es">
             <input type="text" id="add-de" placeholder="Deutsch">
-            <button class="btn primary" id="add-btn">Hinzufügen</button>
+            <input type="text" id="add-lit" class="full" placeholder="Wörtliche Übersetzung (optional)">
+            <button class="btn primary full" id="add-btn">Hinzufügen</button>
           </div>
         </details>
         <p class="meta" id="list-meta"></p>
@@ -278,53 +284,53 @@ input[type=range]{accent-color:var(--blue)}
 const DATA = `
 #Begrüßung & Abschied
 hola|hallo
-buenos días|guten Morgen / guten Tag
-buenas tardes|guten Tag (nachmittags)
-buenas noches|guten Abend / gute Nacht
-adiós|tschüss / auf Wiedersehen
+buenos días|guten Morgen / guten Tag|gute Tage
+buenas tardes|guten Tag (nachmittags)|gute Nachmittage
+buenas noches|guten Abend / gute Nacht|gute Nächte
+adiós|tschüss / auf Wiedersehen|zu Gott
 hasta luego|bis später
 hasta mañana|bis morgen
 hasta pronto|bis bald
 nos vemos|wir sehen uns
-¿Qué tal?|Wie geht's?
-¿Cómo estás?|Wie geht es dir?
-¿Cómo está usted?|Wie geht es Ihnen?
+¿Qué tal?|Wie geht's?|Was so?
+¿Cómo estás?|Wie geht es dir?|Wie bist du?
+¿Cómo está usted?|Wie geht es Ihnen?|Wie sind Sie? (Befinden)
 bien, gracias|gut, danke
 muy bien|sehr gut
-más o menos|so lala
+más o menos|so lala|mehr oder weniger
 ¿Y tú?|Und du?
-mucho gusto|sehr erfreut
-encantado / encantada|freut mich
-bienvenido|willkommen
-¿Qué pasa?|Was ist los?
-igualmente|gleichfalls
-que tengas un buen día|hab einen schönen Tag
+mucho gusto|sehr erfreut|viel Vergnügen
+encantado / encantada|freut mich|verzaubert
+bienvenido|willkommen|gut gekommen
+¿Qué pasa?|Was ist los?|Was passiert?
+igualmente|gleichfalls|gleichermaßen
+que tengas un buen día|hab einen schönen Tag|dass du einen guten Tag hast
 #Höflichkeit & Reaktionen
-por favor|bitte
+por favor|bitte|als Gefallen
 gracias|danke
-muchas gracias|vielen Dank
-de nada|gern geschehen
-perdón|Entschuldigung
+muchas gracias|vielen Dank|viele Danke
+de nada|gern geschehen|für nichts
+perdón|Entschuldigung|Verzeihung
 disculpe|entschuldigen Sie
-lo siento|es tut mir leid
-no pasa nada|macht nichts
-claro|klar / natürlich
-por supuesto|selbstverständlich
-vale|okay (Spanien)
+lo siento|es tut mir leid|ich fühle es
+no pasa nada|macht nichts|es passiert nichts
+claro|klar / natürlich|hell, klar
+por supuesto|selbstverständlich|als vorausgesetzt
+vale|okay (Spanien)|es gilt
 sí|ja
 no|nein
 quizás|vielleicht
-de acuerdo|einverstanden
-no te preocupes|keine Sorge
-¡Salud!|Prost! / Gesundheit!
-¡Buen provecho!|Guten Appetit!
-¡Qué amable!|Wie nett!
-¡Qué bien!|Wie schön! / Super!
-¡Qué pena!|Wie schade!
+de acuerdo|einverstanden|im Einklang
+no te preocupes|keine Sorge|mach dir keine Sorgen
+¡Salud!|Prost! / Gesundheit!|Gesundheit!
+¡Buen provecho!|Guten Appetit!|guten Nutzen!
+¡Qué amable!|Wie nett!|Wie liebenswürdig!
+¡Qué bien!|Wie schön! / Super!|Wie gut!
+¡Qué pena!|Wie schade!|Welch ein Kummer!
 ¡Qué suerte!|Was für ein Glück!
 ¡Qué guay!|Wie cool! (Spanien)
-¡Ojalá!|Hoffentlich!
-¡No me digas!|Was du nicht sagst!
+¡Ojalá!|Hoffentlich!|Wolle Gott! (aus dem Arabischen)
+¡No me digas!|Was du nicht sagst!|Sag mir nicht!
 ¡Qué casualidad!|Was für ein Zufall!
 #Fragen
 ¿qué?|was?
@@ -332,39 +338,39 @@ no te preocupes|keine Sorge
 ¿dónde?|wo?
 ¿de dónde?|woher?
 ¿cuándo?|wann?
-¿por qué?|warum?
+¿por qué?|warum?|für was?
 ¿cómo?|wie?
 ¿cuánto?|wie viel?
 ¿cuál?|welche(r, s)?
-¿Cómo te llamas?|Wie heißt du?
-Me llamo …|Ich heiße …
-¿De dónde eres?|Woher kommst du?
-Soy de Alemania.|Ich komme aus Deutschland.
+¿Cómo te llamas?|Wie heißt du?|Wie nennst du dich?
+Me llamo …|Ich heiße …|Ich nenne mich …
+¿De dónde eres?|Woher kommst du?|Von wo bist du?
+Soy de Alemania.|Ich komme aus Deutschland.|Ich bin aus Deutschland.
 ¿Dónde vives?|Wo wohnst du?
-¿Cuántos años tienes?|Wie alt bist du?
-Tengo … años.|Ich bin … Jahre alt.
-¿A qué te dedicas?|Was machst du beruflich?
+¿Cuántos años tienes?|Wie alt bist du?|Wie viele Jahre hast du?
+Tengo … años.|Ich bin … Jahre alt.|Ich habe … Jahre.
+¿A qué te dedicas?|Was machst du beruflich?|Wem widmest du dich?
 ¿Hablas inglés?|Sprichst du Englisch?
 ¿Qué significa …?|Was bedeutet …?
 ¿Cómo se dice … en español?|Wie sagt man … auf Spanisch?
-¿Qué hora es?|Wie spät ist es?
+¿Qué hora es?|Wie spät ist es?|Welche Stunde ist es?
 ¿Cuánto cuesta?|Wie viel kostet das?
-¿Dónde está el baño?|Wo ist die Toilette?
+¿Dónde está el baño?|Wo ist die Toilette?|Wo ist das Bad?
 ¿Dónde está …?|Wo ist …?
 ¿Te gusta …?|Magst du …? / Gefällt dir …?
 ¿Qué haces en tu tiempo libre?|Was machst du in deiner Freizeit?
-¿Tienes hermanos?|Hast du Geschwister?
-¿Estás de vacaciones?|Bist du im Urlaub?
-¿Cuánto tiempo te quedas?|Wie lange bleibst du?
+¿Tienes hermanos?|Hast du Geschwister?|Hast du Brüder (und Schwestern)?
+¿Estás de vacaciones?|Bist du im Urlaub?|Bist du auf Urlaub?
+¿Cuánto tiempo te quedas?|Wie lange bleibst du?|Wie viel Zeit bleibst du?
 ¿Qué me recomiendas?|Was empfiehlst du mir?
-¿Qué te parece?|Was hältst du davon?
-¿Te apetece un café?|Hast du Lust auf einen Kaffee?
+¿Qué te parece?|Was hältst du davon?|Was scheint es dir?
+¿Te apetece un café?|Hast du Lust auf einen Kaffee?|Gelüstet es dich nach einem Kaffee?
 #Verstehen & Sprache
 No entiendo.|Ich verstehe nicht.
 ¿Puedes repetir, por favor?|Kannst du das bitte wiederholen?
-Más despacio, por favor.|Langsamer, bitte.
-Hablo un poco de español.|Ich spreche ein bisschen Spanisch.
-Estoy aprendiendo español.|Ich lerne Spanisch.
+Más despacio, por favor.|Langsamer, bitte.|Mehr langsam, bitte.
+Hablo un poco de español.|Ich spreche ein bisschen Spanisch.|Ich spreche ein wenig von Spanisch.
+Estoy aprendiendo español.|Ich lerne Spanisch.|Ich bin Spanisch lernend.
 Mi español no es muy bueno.|Mein Spanisch ist nicht sehr gut.
 Hablas muy bien alemán.|Du sprichst sehr gut Deutsch.
 No sé.|Ich weiß nicht.
@@ -376,10 +382,10 @@ el inglés|Englisch
 la familia|die Familie
 el padre|der Vater
 la madre|die Mutter
-los padres|die Eltern
+los padres|die Eltern|die Väter
 el hijo|der Sohn
 la hija|die Tochter
-los hijos|die Kinder (eigene)
+los hijos|die Kinder (eigene)|die Söhne
 el hermano|der Bruder
 la hermana|die Schwester
 el abuelo|der Großvater
@@ -388,11 +394,11 @@ el tío|der Onkel
 la tía|die Tante
 el marido|der Ehemann
 la mujer|die Frau / Ehefrau
-el novio|der Freund (Partner)
-la novia|die Freundin (Partnerin)
-la pareja|der Partner / das Paar
+el novio|der Freund (Partner)|der Verlobte / Bräutigam
+la novia|die Freundin (Partnerin)|die Verlobte / Braut
+la pareja|der Partner / das Paar|das Paar
 el amigo / la amiga|der Freund / die Freundin
-el compañero|der Kollege / Mitbewohner
+el compañero|der Kollege / Mitbewohner|der Gefährte (wer das Brot teilt)
 el niño / la niña|der Junge / das Mädchen (Kind)
 la gente|die Leute
 el perro|der Hund
@@ -403,7 +409,7 @@ yo|ich
 tú|du
 él|er
 ella|sie (Singular)
-usted|Sie (Höflichkeitsform)
+usted|Sie (Höflichkeitsform)|Euer Gnaden (von vuestra merced)
 nosotros|wir
 ellos|sie (Plural)
 mi|mein(e)
@@ -444,10 +450,10 @@ el profesor / la profesora|der Lehrer / die Lehrerin
 el médico / la médica|der Arzt / die Ärztin
 jubilado|in Rente
 el dinero|das Geld
-el móvil|das Handy (Spanien)
+el móvil|das Handy (Spanien)|das Bewegliche
 #Freizeit & Hobbys
-el tiempo libre|die Freizeit
-el fin de semana|das Wochenende
+el tiempo libre|die Freizeit|die freie Zeit
+el fin de semana|das Wochenende|das Ende der Woche
 las vacaciones|der Urlaub / die Ferien
 el viaje|die Reise
 viajar|reisen
@@ -458,9 +464,9 @@ escuchar música|Musik hören
 bailar|tanzen
 el cine|das Kino
 la película|der Film
-ver la tele|fernsehen
+ver la tele|fernsehen|das Fernsehen sehen
 el deporte|der Sport
-hacer deporte|Sport treiben
+hacer deporte|Sport treiben|Sport machen
 jugar|spielen
 el fútbol|der Fußball
 correr|laufen / joggen
@@ -470,27 +476,27 @@ cocinar|kochen
 el museo|das Museum
 la fiesta|die Party / das Fest
 salir|ausgehen / hinausgehen
-quedar con amigos|sich mit Freunden treffen
+quedar con amigos|sich mit Freunden treffen|sich mit Freunden verabreden
 Me gusta …|Ich mag … / Mir gefällt …
-Me encanta …|Ich liebe … (etwas)
-No me gusta …|Ich mag … nicht
+Me encanta …|Ich liebe … (etwas)|Mich verzaubert …
+No me gusta …|Ich mag … nicht|Mir gefällt … nicht
 #Essen & Trinken
 la comida|das Essen
 la bebida|das Getränk
 comer|essen
 beber|trinken
-el desayuno|das Frühstück
+el desayuno|das Frühstück|das Ent-Fasten
 la cena|das Abendessen
 el restaurante|das Restaurant
 el bar|die Bar / Kneipe
 La cuenta, por favor.|Die Rechnung, bitte.
-la carta|die Speisekarte
+la carta|die Speisekarte|der Brief / die Karte
 el agua|das Wasser
 el café|der Kaffee
 el té|der Tee
 la cerveza|das Bier
 el vino|der Wein
-el vino tinto|der Rotwein
+el vino tinto|der Rotwein|der gefärbte Wein
 el vino blanco|der Weißwein
 la leche|die Milch
 el pan|das Brot
@@ -499,35 +505,35 @@ la carne|das Fleisch
 el pescado|der Fisch
 el jamón|der Schinken
 la ensalada|der Salat
-el postre|der Nachtisch
-el helado|das Eis (Speiseeis)
-la tapa|die Tapa (Häppchen)
-rico / rica|lecker
+el postre|der Nachtisch|das Letzte
+el helado|das Eis (Speiseeis)|das Gefrorene
+la tapa|die Tapa (Häppchen)|der Deckel
+rico / rica|lecker|reich
 vegetariano|vegetarisch
 Tengo hambre.|Ich habe Hunger.
 Tengo sed.|Ich habe Durst.
-Quisiera …|Ich hätte gern …
+Quisiera …|Ich hätte gern …|Ich wollte (gern) …
 #Wetter & Jahreszeiten
 el tiempo|das Wetter / die Zeit
-¿Qué tiempo hace?|Wie ist das Wetter?
-Hace calor.|Es ist heiß.
-Hace frío.|Es ist kalt.
-Hace sol.|Die Sonne scheint.
-Hace buen tiempo.|Es ist schönes Wetter.
-Hace viento.|Es ist windig.
+¿Qué tiempo hace?|Wie ist das Wetter?|Welches Wetter macht es?
+Hace calor.|Es ist heiß.|Es macht Hitze.
+Hace frío.|Es ist kalt.|Es macht Kälte.
+Hace sol.|Die Sonne scheint.|Es macht Sonne.
+Hace buen tiempo.|Es ist schönes Wetter.|Es macht gutes Wetter.
+Hace viento.|Es ist windig.|Es macht Wind.
 Llueve.|Es regnet.
 la lluvia|der Regen
 el sol|die Sonne
 el verano|der Sommer
 el invierno|der Winter
-la primavera|der Frühling
+la primavera|der Frühling|der erste Frühling
 el otoño|der Herbst
 #Zeit & Tage
 hoy|heute
 mañana|morgen
 ayer|gestern
 la mañana|der Morgen / Vormittag
-la tarde|der Nachmittag / frühe Abend
+la tarde|der Nachmittag / frühe Abend|die Späte
 la noche|die Nacht / der Abend
 el día|der Tag
 la semana|die Woche
@@ -540,20 +546,20 @@ antes|vorher / früher
 después|danach
 siempre|immer
 nunca|nie
-a veces|manchmal
+a veces|manchmal|zu Malen
 ya|schon
 pronto|bald
 tarde|spät
-todos los días|jeden Tag
-el cumpleaños|der Geburtstag
-Son las tres.|Es ist drei Uhr.
-el lunes|der Montag
-el martes|der Dienstag
-el miércoles|der Mittwoch
-el jueves|der Donnerstag
-el viernes|der Freitag
-el sábado|der Samstag
-el domingo|der Sonntag
+todos los días|jeden Tag|alle die Tage
+el cumpleaños|der Geburtstag|(es) erfüllt Jahre
+Son las tres.|Es ist drei Uhr.|Es sind die drei.
+el lunes|der Montag|(Tag des) Mondes
+el martes|der Dienstag|(Tag des) Mars
+el miércoles|der Mittwoch|(Tag des) Merkur
+el jueves|der Donnerstag|(Tag des) Jupiter
+el viernes|der Freitag|(Tag der) Venus
+el sábado|der Samstag|der Sabbat
+el domingo|der Sonntag|(Tag des) Herrn
 enero|Januar
 febrero|Februar
 marzo|März
@@ -594,10 +600,10 @@ aburrido|gelangweilt / langweilig
 enfermo|krank
 tranquilo|ruhig / entspannt
 tener miedo|Angst haben
-tener prisa|es eilig haben
-tener razón|recht haben
+tener prisa|es eilig haben|Eile haben
+tener razón|recht haben|Vernunft haben
 tener ganas de …|Lust haben auf …
-Me duele la cabeza.|Ich habe Kopfschmerzen.
+Me duele la cabeza.|Ich habe Kopfschmerzen.|Mir tut der Kopf weh.
 #Wichtige Verben
 ser|sein (Eigenschaft, Herkunft)
 estar|sein (Zustand, Ort)
@@ -624,7 +630,7 @@ necesitar|brauchen
 buscar|suchen
 encontrar|finden
 llamar|anrufen / rufen
-llamarse|heißen
+llamarse|heißen|sich nennen
 esperar|warten / hoffen
 llegar|ankommen
 volver|zurückkommen
@@ -642,14 +648,14 @@ aprender|lernen
 recordar|sich erinnern
 olvidar|vergessen
 perder|verlieren / verpassen
-quedarse|bleiben
+quedarse|bleiben|sich bleiben
 sentirse|sich fühlen
 visitar|besuchen
 descansar|sich ausruhen
 invitar|einladen
 probar|probieren
-tener que …|… müssen
-voy a …|ich werde (gleich) …
+tener que …|… müssen|haben zu …
+voy a …|ich werde (gleich) …|ich gehe zu …
 #Eigenschaften & Farben
 bueno|gut
 malo|schlecht
@@ -715,31 +721,31 @@ hasta|bis
 así|so
 entonces|dann / also
 pues|also / nun ja
-o sea|das heißt
-es que …|es ist so, dass …
-¿verdad?|oder? / nicht wahr?
+o sea|das heißt|oder sei es
+es que …|es ist so, dass …|es ist, dass …
+¿verdad?|oder? / nicht wahr?|Wahrheit?
 solo|nur
 casi|fast
-otra vez|noch einmal
+otra vez|noch einmal|ein anderes Mal
 juntos|zusammen
 por ejemplo|zum Beispiel
 en serio|im Ernst
-de verdad|wirklich
+de verdad|wirklich|von Wahrheit
 este / esta|dieser / diese
 eso|das
 #Unterwegs
-el aeropuerto|der Flughafen
+el aeropuerto|der Flughafen|der Lufthafen
 el avión|das Flugzeug
 el tren|der Zug
 la estación|der Bahnhof
 el autobús|der Bus
-el coche|das Auto (Spanien)
+el coche|das Auto (Spanien)|die Kutsche
 el taxi|das Taxi
 el billete|die Fahrkarte / das Ticket
 el hotel|das Hotel
-la habitación|das Zimmer
+la habitación|das Zimmer|der Wohnraum
 la maleta|der Koffer
-la tienda|der Laden
+la tienda|der Laden|das Zelt
 el supermercado|der Supermarkt
 el mercado|der Markt
 la farmacia|die Apotheke
@@ -751,31 +757,31 @@ el parque|der Park
 el centro|das Zentrum
 a la derecha|rechts
 a la izquierda|links
-todo recto|geradeaus
+todo recto|geradeaus|alles gerade
 la isla|die Insel
 el río|der Fluss
 ¿Está lejos?|Ist es weit?
-Estoy de vacaciones.|Ich bin im Urlaub.
-Es mi primera vez aquí.|Ich bin zum ersten Mal hier.
-Llevo … días aquí.|Ich bin seit … Tagen hier.
+Estoy de vacaciones.|Ich bin im Urlaub.|Ich bin auf Urlaub.
+Es mi primera vez aquí.|Ich bin zum ersten Mal hier.|Es ist mein erstes Mal hier.
+Llevo … días aquí.|Ich bin seit … Tagen hier.|Ich trage … Tage hier.
 #Im Gespräch
-Me gusta mucho.|Es gefällt mir sehr.
-Creo que sí.|Ich glaube schon.
-Creo que no.|Ich glaube nicht.
-Depende.|Kommt darauf an.
-Tienes razón.|Du hast recht.
-Estoy de acuerdo.|Ich stimme zu.
-Cuéntame.|Erzähl mal.
-¡Qué fuerte!|Krass! / Unglaublich!
-Me encanta este lugar.|Ich liebe diesen Ort.
+Me gusta mucho.|Es gefällt mir sehr.|Mir gefällt es viel.
+Creo que sí.|Ich glaube schon.|Ich glaube, dass ja.
+Creo que no.|Ich glaube nicht.|Ich glaube, dass nein.
+Depende.|Kommt darauf an.|Es hängt ab.
+Tienes razón.|Du hast recht.|Du hast Vernunft.
+Estoy de acuerdo.|Ich stimme zu.|Ich bin im Einklang.
+Cuéntame.|Erzähl mal.|Erzähl mir.
+¡Qué fuerte!|Krass! / Unglaublich!|Wie stark!
+Me encanta este lugar.|Ich liebe diesen Ort.|Mich verzaubert dieser Ort.
 Te invito.|Ich lade dich ein.
-Ha sido un placer.|Es war mir ein Vergnügen.
-Me tengo que ir.|Ich muss los.
+Ha sido un placer.|Es war mir ein Vergnügen.|Es ist ein Vergnügen gewesen.
+Me tengo que ir.|Ich muss los.|Ich habe zu gehen.
 Ya es tarde.|Es ist schon spät.
-¡Que te vaya bien!|Mach's gut!
+¡Que te vaya bien!|Mach's gut!|Dass es dir gut gehe!
 ¡Buen viaje!|Gute Reise!
-¡Que lo pases bien!|Viel Spaß!
-¡Suerte!|Viel Glück!
+¡Que lo pases bien!|Viel Spaß!|Dass du es gut verbringst!
+¡Suerte!|Viel Glück!|Glück!
 `;
 
 /* =========================================================
@@ -887,15 +893,16 @@ const PRON = (() => {
 const KEY = 'charla-es-v1';
 const MIN = 60e3, DAY = 864e5;
 const $ = s => document.querySelector(s);
+const lookupUrl = de => 'https://translate.google.com/?sl=de&tl=es&op=translate&text=' + encodeURIComponent(de.replace(/\([^)]*\)/g,'').replace(/…/g,'').replace(/\s+/g,' ').trim());
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const defaults = () => ({dir:'es-de', newPer:20, order:'random', showAnswer:true, showPron:true, variant:'latam', autoSpeak:false, rate:0.9, cats:null, voiceName:''});
 
 const CATS = [], VOCAB = [], BYID = new Map();
-function addWord(es, de, cat){
+function addWord(es, de, cat, lit = ''){
   es = es.trim(); de = de.trim();
   if (!es || !de || BYID.has(es)) return false;
   if (!CATS.includes(cat)) CATS.push(cat);
-  const v = {id:es, es, de, cat};
+  const v = {id:es, es, de, cat, lit:(lit||'').trim()};
   VOCAB.push(v); BYID.set(es, v); return true;
 }
 (function parse(){
@@ -903,7 +910,7 @@ function addWord(es, de, cat){
   DATA.split('\n').forEach(line => {
     line = line.trim(); if (!line) return;
     if (line[0]==='#'){ cat = line.slice(1).trim(); return; }
-    const [es, de] = line.split('|'); addWord(es||'', de||'', cat);
+    const [es, de, lit] = line.split('|'); addWord(es||'', de||'', cat, lit);
   });
 })();
 
@@ -915,7 +922,7 @@ function load(){
   return {cards:{}, custom:[], log:{}, settings:defaults()};
 }
 let state = load();
-state.custom.forEach(w => addWord(w.es, w.de, w.cat || 'Eigene Wörter'));
+state.custom.forEach(w => addWord(w.es, w.de, w.cat || 'Eigene Wörter', w.lit));
 const S = () => state.settings;
 function save(){
   try { localStorage.setItem(KEY, JSON.stringify(state)); }
@@ -1024,14 +1031,16 @@ function renderCard(){
   const spk = `<button class="speak" data-speak aria-label="Spanisch vorlesen">${SPEAKER}</button>`;
   const esBlock = (cls) => `<div class="${cls}" lang="es">${esc(v.es)}</div>${pr}${spk}`;
   const deBlock = (cls) => `<div class="${cls}">${esc(v.de)}</div>`;
+  const lit = v.lit ? `<div class="lit">(wörtlich: ${esc(v.lit)})</div>` : '';
   const top = esFirst ? esBlock('prompt') : deBlock('prompt');
-  const bottom = revealed ? (esFirst ? deBlock('answer') : esBlock('answer'))
+  const bottom = revealed ? (esFirst ? deBlock('answer') : esBlock('answer')) + lit
                           : `<button class="reveal" data-reveal>Antippen, um die Lösung zu sehen</button>`;
   cardEl.innerHTML = `
     <div class="card-top"><span class="chip">${esc(v.cat)}</span><span>${esFirst ? 'ES → DE' : 'DE → ES'}</span></div>
     <div class="side">${top}</div>
     <div class="divider"></div>
     <div class="side">${bottom}</div>
+    <div class="card-foot"><a class="lookup" href="${esc(lookupUrl(v.de))}" target="_blank" rel="noopener">Im Google Übersetzer nachschlagen ↗</a></div>
     <div class="stamp yes">Kann ich</div><div class="stamp no">Kurz</div><div class="stamp half">Lange</div><div class="stamp skip">Brauch ich nicht</div>`;
 }
 function reveal(){
@@ -1097,7 +1106,7 @@ function doUndo(){
   const T = 90;
   const stamps = () => ({yes:cardEl.querySelector('.stamp.yes'), no:cardEl.querySelector('.stamp.no'), half:cardEl.querySelector('.stamp.half'), skip:cardEl.querySelector('.stamp.skip')});
   cardEl.addEventListener('pointerdown', e => {
-    if (e.target.closest('button') || !current) return;
+    if (e.target.closest('button, a') || !current) return;
     pid = e.pointerId; sx = e.clientX; sy = e.clientY; dx = dy = 0;
     cardEl.setPointerCapture(pid); cardEl.style.transition = 'none';
   });
@@ -1150,6 +1159,7 @@ document.addEventListener('keydown', e => {
   else if (k==='ArrowRight' || k==='4'){ e.preventDefault(); fly('yes'); }
   else if (k===' '){ e.preventDefault(); if (current) speak(BYID.get(current.id).es); }
   else if (k==='Enter'){ reveal(); }
+  else if (k==='g' && current){ window.open(lookupUrl(BYID.get(current.id).de), '_blank', 'noopener'); }
   else if (k==='z' || k==='Backspace'){ doUndo(); }
 });
 
@@ -1225,8 +1235,8 @@ function renderList(){
     const due = c.seen ? (c.due <= now ? 'jetzt fällig' : `in ${fmtWait(c.due - now)}`) : '';
     return `<div class="row">
       <button class="speak small" data-say="${esc(v.id)}" aria-label="${esc(v.es)} vorlesen">${SPEAKER}</button>
-      <div><div class="r-es" lang="es">${esc(v.es)}</div>${S().showPron ? `<div class="r-pron">${esc(pron(v.es))}</div>` : ''}<div class="r-de">${esc(v.de)}</div></div>
-      <div class="r-meta"><span class="pill ${st}">${STATUS_LABEL[st]}</span>${c.seen && !c.ignored ? `<span title="kann ich · lange · kurz">→${c.yes} ↑${c.half} ←${c.no}</span><span>${due}</span>` : ''}<button class="tog" data-tog="${esc(v.id)}">${c.ignored ? 'Wieder lernen' : 'Ausblenden'}</button></div>
+      <div><div class="r-es" lang="es">${esc(v.es)}</div>${S().showPron ? `<div class="r-pron">${esc(pron(v.es))}</div>` : ''}<div class="r-de">${esc(v.de)}</div>${v.lit ? `<div class="r-lit">(wörtlich: ${esc(v.lit)})</div>` : ''}</div>
+      <div class="r-meta"><span class="pill ${st}">${STATUS_LABEL[st]}</span>${c.seen && !c.ignored ? `<span title="kann ich · lange · kurz">→${c.yes} ↑${c.half} ←${c.no}</span><span>${due}</span>` : ''}<span class="r-links"><a class="tog" href="${esc(lookupUrl(v.de))}" target="_blank" rel="noopener">Nachschlagen</a><button class="tog" data-tog="${esc(v.id)}">${c.ignored ? 'Wieder lernen' : 'Ausblenden'}</button></span></div>
     </div>`;
   }).join('');
 }
@@ -1251,11 +1261,11 @@ function download(name, text, type){
 }
 const stamp = t => { if (!t) return ''; const d = new Date(t); return `${dayKey(t)} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
 const deDate = t => new Date(t).toLocaleDateString('de-DE');
-const HEAD = ['spanisch','deutsch','kategorie','lesehilfe','stand','gesehen','kann_ich','lange_geschoben','kurz_geschoben','intervall_tage','faktor','faellig','zuletzt','ausgeblendet'];
+const HEAD = ['spanisch','deutsch','woertlich','kategorie','lesehilfe','stand','gesehen','kann_ich','lange_geschoben','kurz_geschoben','intervall_tage','faktor','faellig','zuletzt','ausgeblendet'];
 function exportCSV(){
   const q = s => '"' + String(s).replace(/"/g,'""') + '"';
   const rows = VOCAB.map(v => { const c = cardOf(v.id);
-    return [v.es, v.de, v.cat, pron(v.es), STATUS_LABEL[status(c)], c.seen, c.yes, c.half, c.no,
+    return [v.es, v.de, v.lit, v.cat, pron(v.es), STATUS_LABEL[status(c)], c.seen, c.yes, c.half, c.no,
             String(Math.round(c.interval*1000)/1000).replace('.',','), String(c.ease).replace('.',','), c.seen ? stamp(c.due) : '', stamp(c.last), c.ignored ? 'ja' : 'nein']; });
   download(`spanisch-vokabeln-${dayKey()}.csv`, '\ufeff' + [HEAD, ...rows].map(r => r.map(q).join(';')).join('\r\n'), 'text/csv;charset=utf-8');
   toast('CSV exportiert.');
@@ -1268,7 +1278,7 @@ function exportTXT(){
     out += `\n== ${cat} ==\n`;
     list.forEach(v => { const c = cardOf(v.id);
       const info = c.ignored ? 'Ausgeblendet' : c.seen ? `${STATUS_LABEL[status(c)]} · kann ich ${c.yes}× · lange ${c.half}× · kurz ${c.no}× · fällig ${deDate(c.due)}` : 'Neu';
-      out += `${v.es}  [${pron(v.es)}]  =  ${v.de}   | ${info}\n`; });
+      out += `${v.es}  [${pron(v.es)}]  =  ${v.de}${v.lit ? `  (wörtlich: ${v.lit})` : ''}   | ${info}\n`; });
   });
   download(`spanisch-vokabeln-${dayKey()}.txt`, out, 'text/plain;charset=utf-8');
   toast('TXT exportiert.');
@@ -1303,7 +1313,7 @@ function importCSV(text){
     const g = n => ix(n) >= 0 ? (r[ix(n)] || '').trim() : '';
     const es = g('spanisch'), de = g('deutsch');
     if (!es || !de) return;
-    if (!BYID.has(es)){ const cat = g('kategorie') || 'Eigene Wörter'; addWord(es, de, cat); state.custom.push({es, de, cat}); added++; }
+    if (!BYID.has(es)){ const cat = g('kategorie') || 'Eigene Wörter', lit = g('woertlich'); addWord(es, de, cat, lit); state.custom.push({es, de, cat, lit}); added++; }
     const ign = g('ausgeblendet').toLowerCase()==='ja';
     if (hasHead && ix('gesehen') >= 0 && (num(g('gesehen')) > 0 || ign)){
       const kurz = num(g('kurz_geschoben') || g('nicht_gewusst'));
@@ -1326,10 +1336,11 @@ $('#add-btn').onclick = () => {
   const es = $('#add-es').value.trim(), de = $('#add-de').value.trim();
   if (!es || !de){ toast('Bitte Spanisch und Deutsch ausfüllen.'); return; }
   if (BYID.has(es)){ toast('Dieses Wort ist schon in der Liste.'); return; }
-  addWord(es, de, 'Eigene Wörter'); state.custom.push({es, de, cat:'Eigene Wörter'});
+  const lit = $('#add-lit').value.trim();
+  addWord(es, de, 'Eigene Wörter', lit); state.custom.push({es, de, cat:'Eigene Wörter', lit});
   if (S().cats && !S().cats.includes('Eigene Wörter')) S().cats.push('Eigene Wörter');
   save(); dirty = true; fillCats(); renderList();
-  $('#add-es').value = ''; $('#add-de').value = ''; toast(`„${es}“ hinzugefügt.`);
+  $('#add-es').value = ''; $('#add-de').value = ''; $('#add-lit').value = ''; toast(`„${es}“ hinzugefügt.`);
 };
 
 /* =========================================================
