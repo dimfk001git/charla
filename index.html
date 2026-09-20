@@ -12,7 +12,7 @@
 :root{
   --blue:#1f3f9e; --blue-deep:#162e76; --tile:#2a4fb3;
   --paper:#fdfcf8; --ink:#16213e; --muted:#5e6782; --line:#e3e6ef; --soft:#f1f3f9;
-  --no:#d6423a; --half:#e9a800; --yes:#23935f;
+  --no:#d6423a; --half:#e9a800; --yes:#23935f; --skip:#6b7390;
   --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --text:"Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
   box-sizing:border-box;
@@ -87,16 +87,17 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 .stamp.no{right:20px;color:var(--no);transform:rotate(8deg)}
 .stamp.yes{left:20px;color:var(--yes);transform:rotate(-8deg)}
 .stamp.half{left:50%;top:auto;bottom:24px;transform:translateX(-50%);color:var(--half)}
+.stamp.skip{left:50%;transform:translateX(-50%);color:var(--skip);white-space:nowrap}
 .done{width:100%;max-width:520px;background:var(--paper);border-radius:22px;padding:28px 24px;text-align:center;display:flex;flex-direction:column;gap:14px;justify-content:center;box-shadow:0 18px 40px rgba(5,15,50,.35)}
 .done h2{font-family:var(--display);font-size:2rem;margin:0}
 .done p{margin:0;color:var(--muted)}
 .tally{display:flex;justify-content:center;gap:22px;font-family:var(--display);font-size:1.3rem;font-weight:700}
 .tally .y{color:var(--yes)}.tally .h{color:var(--half)}.tally .x{color:var(--no)}
-.rate{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:14px 16px 6px}
-.rate button{border:0;border-radius:16px;padding:12px 6px 10px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:700;font-size:1rem;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+.rate{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:14px 12px 6px}
+.rate button{border:0;border-radius:16px;padding:12px 6px 10px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:700;font-size:.9rem;line-height:1.15;box-shadow:0 3px 0 rgba(0,0,0,.2);min-height:64px;justify-content:center}
 .rate button:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.2)}
 .rate button span{font-weight:400;font-size:.78rem;opacity:.9}
-.rate .b-no{background:var(--no)}.rate .b-half{background:var(--half);color:#2a1e00}.rate .b-yes{background:var(--yes)}
+.rate .b-no{background:var(--no)}.rate .b-half{background:var(--half);color:#2a1e00}.rate .b-yes{background:var(--yes)}.rate .b-skip{background:var(--skip)}
 .rate button:disabled{opacity:.4}
 .below{display:flex;justify-content:space-between;align-items:center;padding:4px 18px 12px;color:rgba(255,255,255,.75);font-size:.8rem;gap:10px}
 .linkbtn{border:0;background:transparent;color:#fff;text-decoration:underline;text-underline-offset:3px;padding:6px 0}
@@ -119,7 +120,8 @@ input[type=search],input[type=text],input[type=number],select{border:1.5px solid
 .r-de{font-size:.95rem}
 .r-meta{text-align:right;font-size:.8rem;color:var(--muted);display:flex;flex-direction:column;align-items:flex-end;gap:3px}
 .pill{border-radius:999px;padding:2px 9px;font-size:.75rem;font-weight:700;background:var(--soft);color:var(--muted)}
-.pill.lernend{background:#fde3e1;color:#9c2a22}.pill.jung{background:#fff1c7;color:#7a5800}.pill.gefestigt{background:#d7f2e4;color:#17603f}
+.pill.lernend{background:#fde3e1;color:#9c2a22}.pill.jung{background:#fff1c7;color:#7a5800}.pill.gefestigt{background:#d7f2e4;color:#17603f}.pill.aus{background:transparent;border:1px solid var(--line)}
+.tog{border:0;background:none;color:var(--muted);text-decoration:underline;text-underline-offset:2px;font-size:.78rem;padding:2px 0}
 .add{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin:6px 0 16px}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
 .tile{background:var(--soft);border-radius:14px;padding:12px 14px}
@@ -174,12 +176,13 @@ input[type=range]{accent-color:var(--blue)}
         <div class="done" id="done" hidden></div>
       </div>
       <div class="rate" id="rate">
-        <button class="b-no" data-r="no">Nicht<span id="pv-no">←</span></button>
-        <button class="b-half" data-r="half">Halb<span id="pv-half">↑</span></button>
-        <button class="b-yes" data-r="yes">Gewusst<span id="pv-yes">→</span></button>
+        <button class="b-skip" data-r="skip">Brauch ich nicht<span id="pv-skip">↓</span></button>
+        <button class="b-no" data-r="no">Kurz schieben<span id="pv-no">←</span></button>
+        <button class="b-half" data-r="half">Lange schieben<span id="pv-half">↑</span></button>
+        <button class="b-yes" data-r="yes">Kann ich<span id="pv-yes">→</span></button>
       </div>
       <div class="below">
-        <span>Wischen: ← nicht · ↑ halb · → gewusst</span>
+        <button class="linkbtn" id="add-new">+ 10 neue Wörter</button>
         <button class="linkbtn" id="undo" disabled>Rückgängig</button>
       </div>
     </section>
@@ -193,7 +196,7 @@ input[type=range]{accent-color:var(--blue)}
           <select id="f-cat"><option value="">Alle Kategorien</option></select>
           <select id="f-status">
             <option value="">Jeder Stand</option><option value="neu">Neu</option><option value="lernend">In Arbeit</option>
-            <option value="jung">Jung</option><option value="gefestigt">Gefestigt</option><option value="due">Jetzt fällig</option>
+            <option value="jung">Jung</option><option value="gefestigt">Gefestigt</option><option value="due">Jetzt fällig</option><option value="aus">Ausgeblendet</option>
           </select>
         </div>
         <div class="tools">
@@ -240,8 +243,9 @@ input[type=range]{accent-color:var(--blue)}
           <input type="checkbox" id="s-auto"></div>
         <div class="set"><label for="s-rate">Sprechtempo <small id="s-rate-val"></small></label>
           <input type="range" id="s-rate" min="0.5" max="1.2" step="0.05"></div>
-        <div class="set"><label>Stimme<small id="voice-info">Suche spanische Stimme …</small></label>
-          <button class="btn" id="voice-test">Testen</button></div>
+        <div class="set"><label for="s-voice">Stimme<small id="voice-info">Suche spanische Stimme …</small></label>
+          <div style="display:flex;gap:6px"><select id="s-voice" style="max-width:190px"></select><button class="btn" id="voice-test">Testen</button></div></div>
+        <p class="meta" style="margin-top:8px">iPhone: Der Stummschalter muss aus sein, sonst bleibt das Vorlesen stumm. Weitere spanische Stimmen gibt es unter Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen → Spanisch.</p>
 
         <h3>Kategorien zum Lernen</h3>
         <div class="tools"><button class="btn" id="cats-all">Alle</button><button class="btn" id="cats-none">Keine</button></div>
@@ -884,7 +888,7 @@ const KEY = 'charla-es-v1';
 const MIN = 60e3, DAY = 864e5;
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const defaults = () => ({dir:'es-de', newPer:20, order:'random', showAnswer:true, showPron:true, variant:'latam', autoSpeak:false, rate:0.9, cats:null});
+const defaults = () => ({dir:'es-de', newPer:20, order:'random', showAnswer:true, showPron:true, variant:'latam', autoSpeak:false, rate:0.9, cats:null, voiceName:''});
 
 const CATS = [], VOCAB = [], BYID = new Map();
 function addWord(es, de, cat){
@@ -922,29 +926,28 @@ const cardOf = id => state.cards[id] || fresh();
 const ensure = id => state.cards[id] || (state.cards[id] = fresh());
 const pron = es => PRON.of(es, S().variant==='spain');
 function dayKey(t = Date.now()){ const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-function status(c){ if (!c || !c.seen) return 'neu'; if (c.interval < 1) return 'lernend'; if (c.interval < 21) return 'jung'; return 'gefestigt'; }
-const STATUS_LABEL = {neu:'Neu', lernend:'In Arbeit', jung:'Jung', gefestigt:'Gefestigt'};
+function status(c){ if (c && c.ignored) return 'aus'; if (!c || !c.seen) return 'neu'; if (c.interval < 1) return 'lernend'; if (c.interval < 21) return 'jung'; return 'gefestigt'; }
+const STATUS_LABEL = {neu:'Neu', lernend:'In Arbeit', jung:'Jung', gefestigt:'Gefestigt', aus:'Ausgeblendet'};
 
 /* =========================================================
-   Wiederholungs-Logik (vereinfachtes SM-2)
-   nicht → in 1 Min wieder · halb → 10 Min / 1 Tag / Intervall ×1,2
-   gewusst → Intervall wächst mit dem Faktor der Karte
+   Wiederholungs-Logik
+   kurz schieben → ans Ende der Runde · lange schieben → ab 3 Tage
+   kann ich → ab 30 Tage · brauch ich nicht → ausgeblendet
    ========================================================= */
 function dueInDays(d, now){ const t = new Date(now); t.setHours(0,0,0,0); t.setDate(t.getDate() + Math.max(1, Math.round(d))); return t.getTime(); }
 function schedule(c, r, now = Date.now()){
+  if (r==='skip'){ c.ignored = true; return; }
   c.seen++; c.last = now;
-  if (r==='no'){
-    c.no++; c.lapses++; c.ease = Math.max(1.3, c.ease - .2); c.interval = 0; c.due = now + MIN;
-  } else if (r==='half'){
-    c.half++; c.ease = Math.max(1.3, c.ease - .15);
-    if (c.interval < 1){
-      if (c.interval > 0){ c.interval = 1; c.due = dueInDays(1, now); }
-      else { c.interval = 10/1440; c.due = now + 10*MIN; }
-    } else { c.interval = Math.max(1, Math.round(c.interval*1.2)); c.due = dueInDays(c.interval, now); }
-  } else {
+  if (r==='no'){            // kurz schieben: ans Ende der Runde, frühestens in 10 Min
+    c.no++; c.lapses++; c.ease = Math.max(1.3, c.ease - .15); c.interval = 0; c.due = now + 10*MIN;
+  } else if (r==='half'){   // lange schieben: mind. 3 Tage, danach wachsend
+    c.half++;
+    c.interval = c.interval < 3 ? 3 : Math.min(365, Math.round(c.interval * c.ease));
+    c.due = dueInDays(c.interval, now);
+  } else {                  // kann ich: mind. 30 Tage, danach deutlich länger
     c.yes++;
-    if (c.interval < 1) c.interval = c.seen===1 ? 4 : 1;
-    else { c.interval = Math.min(365, Math.round(c.interval * c.ease)); c.ease = Math.min(3, c.ease + .05); }
+    c.interval = c.interval < 30 ? 30 : Math.min(365, Math.round(c.interval * c.ease * 1.5));
+    c.ease = Math.min(3, c.ease + .1);
     c.due = dueInDays(c.interval, now);
   }
   c.ease = Math.round(c.ease*100)/100;
@@ -959,13 +962,13 @@ function fmtWait(ms){
   const mo = Math.round(d/30);
   return mo===1 ? '1 Monat' : `${mo} Monate`;
 }
-function preview(id, r){ const c = {...cardOf(id)}; const now = Date.now(); schedule(c, r, now); return c.interval >= 1 ? fmtWait(c.interval*DAY) : fmtWait(c.due - now); }
+function preview(id, r){ if (r==='skip') return 'weg'; const c = {...cardOf(id)}; const now = Date.now(); schedule(c, r, now); return c.interval >= 1 ? fmtWait(c.interval*DAY) : fmtWait(c.due - now); }
 
 /* =========================================================
    Sitzung
    ========================================================= */
-let queue = [], current = null, sess = {yes:0, half:0, no:0}, undo = null, dirty = true;
-function pool(){ return VOCAB.filter(v => !S().cats || S().cats.includes(v.cat)); }
+let queue = [], current = null, sess = {yes:0, half:0, no:0, skip:0}, undo = null, dirty = true;
+function pool(){ return VOCAB.filter(v => (!S().cats || S().cats.includes(v.cat)) && !cardOf(v.id).ignored); }
 function shuffle(a){ for (let i = a.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
 function newIds(n, exclude = new Set()){
   let fresh = pool().filter(v => !cardOf(v.id).seen && !exclude.has(v.id));
@@ -983,7 +986,7 @@ function buildQueue(){
     if (due.length) queue.push(due.shift());
     if (nw.length) queue.push(nw.shift());
   }
-  sess = {yes:0, half:0, no:0}; undo = null; current = null; dirty = false;
+  sess = {yes:0, half:0, no:0, skip:0}; undo = null; current = null; dirty = false;
   showCard();
 }
 function updateCounts(){
@@ -1012,7 +1015,7 @@ function showCard(){
   cardEl.style.transition = 'none'; cardEl.style.transform = ''; cardEl.style.opacity = '';
   cardEl.classList.remove('enter'); void cardEl.offsetWidth; cardEl.classList.add('enter');
   requestAnimationFrame(() => cardEl.style.transition = '');
-  ['no','half','yes'].forEach(r => $('#pv-'+r).textContent = `${{no:'←',half:'↑',yes:'→'}[r]} ${preview(id, r)}`);
+  ['skip','no','half','yes'].forEach(r => $('#pv-'+r).textContent = `${{skip:'↓',no:'←',half:'↑',yes:'→'}[r]} ${preview(id, r)}`);
   if (S().autoSpeak && (current.dir==='es-de' || revealed)) speak(BYID.get(id).es);
 }
 function renderCard(){
@@ -1029,7 +1032,7 @@ function renderCard(){
     <div class="side">${top}</div>
     <div class="divider"></div>
     <div class="side">${bottom}</div>
-    <div class="stamp yes">¡Sí!</div><div class="stamp no">¡No!</div><div class="stamp half">Más o menos</div>`;
+    <div class="stamp yes">Kann ich</div><div class="stamp no">Kurz</div><div class="stamp half">Lange</div><div class="stamp skip">Brauch ich nicht</div>`;
 }
 function reveal(){
   if (!current || revealed) return;
@@ -1039,14 +1042,14 @@ function reveal(){
 function renderDone(){
   cardEl.hidden = true; doneEl.hidden = false;
   $('#rate').querySelectorAll('button').forEach(b => b.disabled = true);
-  const total = sess.yes + sess.half + sess.no;
+  const total = sess.yes + sess.half + sess.no + sess.skip;
   const now = Date.now();
   const nextDue = pool().map(v => state.cards[v.id]).filter(c => c && c.seen && c.due > now).map(c => c.due).sort((a,b) => a-b)[0];
   const newLeft = pool().filter(v => !cardOf(v.id).seen).length;
   const reviewable = pool().filter(v => cardOf(v.id).seen).length;
   doneEl.innerHTML = `
     <h2>${total ? '¡Muy bien!' : '¡Hola!'}</h2>
-    ${total ? `<p>Runde geschafft – ${total} Karten.</p><div class="tally"><span class="y">✓ ${sess.yes}</span><span class="h">~ ${sess.half}</span><span class="x">✗ ${sess.no}</span></div>`
+    ${total ? `<p>Runde geschafft – ${total} Karten.</p><div class="tally"><span class="y" title="Kann ich">→ ${sess.yes}</span><span class="h" title="Lange geschoben">↑ ${sess.half}</span><span class="x" title="Kurz geschoben">← ${sess.no}</span><span title="Ausgeblendet" style="color:var(--skip)">↓ ${sess.skip}</span></div>`
             : `<p>Gerade ist nichts fällig.</p>`}
     <p>${nextDue ? `Nächste Wiederholung in ${fmtWait(nextDue - now)}.` : ''} ${newLeft} neue Wörter warten noch.</p>
     <button class="btn primary" id="more-new" ${newLeft ? '' : 'disabled'}>10 neue Wörter lernen</button>
@@ -1063,16 +1066,18 @@ function rate(r){
   undo = {id, prev: state.cards[id] ? {...state.cards[id]} : null, queue:[...queue], dk, sess:{...sess}, current:{...current}};
   const c = ensure(id);
   schedule(c, r);
-  state.log[dk] = (state.log[dk]||0) + 1;
+  if (r !== 'skip') state.log[dk] = (state.log[dk]||0) + 1;
+  undo.logged = r !== 'skip';
   sess[r]++;
   queue.shift();
-  if (c.due - Date.now() < 20*MIN) queue.splice(Math.min(queue.length, r==='no' ? 3 : 6), 0, id);
+  if (r==='skip') queue = queue.filter(x => x !== id);
+  else if (r==='no') queue.push(id);
   current = null;
   save(); showCard();
 }
 function fly(r){
   if (!current) return;
-  const dx = {no:-1, yes:1, half:0}[r], dy = r==='half' ? -1 : 0;
+  const dx = {no:-1, yes:1, half:0, skip:0}[r], dy = {half:-1, skip:1}[r] || 0;
   cardEl.style.transition = 'transform .22s ease, opacity .22s ease';
   cardEl.style.transform = `translate(${dx*120}%, ${dy*80}%) rotate(${dx*14}deg)`;
   cardEl.style.opacity = '0';
@@ -1081,7 +1086,7 @@ function fly(r){
 function doUndo(){
   if (!undo) return;
   if (undo.prev) state.cards[undo.id] = undo.prev; else delete state.cards[undo.id];
-  state.log[undo.dk] = Math.max(0, (state.log[undo.dk]||1) - 1);
+  if (undo.logged) state.log[undo.dk] = Math.max(0, (state.log[undo.dk]||1) - 1);
   queue = undo.queue; sess = undo.sess; current = undo.current; revealed = true;
   undo = null; save(); showCard();
 }
@@ -1090,7 +1095,7 @@ function doUndo(){
 (function swipe(){
   let sx = 0, sy = 0, dx = 0, dy = 0, pid = null;
   const T = 90;
-  const stamps = () => ({yes:cardEl.querySelector('.stamp.yes'), no:cardEl.querySelector('.stamp.no'), half:cardEl.querySelector('.stamp.half')});
+  const stamps = () => ({yes:cardEl.querySelector('.stamp.yes'), no:cardEl.querySelector('.stamp.no'), half:cardEl.querySelector('.stamp.half'), skip:cardEl.querySelector('.stamp.skip')});
   cardEl.addEventListener('pointerdown', e => {
     if (e.target.closest('button') || !current) return;
     pid = e.pointerId; sx = e.clientX; sy = e.clientY; dx = dy = 0;
@@ -1099,12 +1104,13 @@ function doUndo(){
   cardEl.addEventListener('pointermove', e => {
     if (e.pointerId !== pid) return;
     dx = e.clientX - sx; dy = e.clientY - sy;
-    cardEl.style.transform = `translate(${dx}px, ${Math.min(dy, 30)}px) rotate(${dx/22}deg)`;
+    cardEl.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx/22}deg)`;
     const st = stamps(), horiz = Math.abs(dx) > Math.abs(dy);
     if (st.yes){
       st.yes.style.opacity = horiz ? Math.max(0, Math.min(1, dx/T)) : 0;
       st.no.style.opacity = horiz ? Math.max(0, Math.min(1, -dx/T)) : 0;
       st.half.style.opacity = !horiz ? Math.max(0, Math.min(1, -dy/T)) : 0;
+      st.skip.style.opacity = !horiz ? Math.max(0, Math.min(1, dy/T)) : 0;
     }
   });
   const end = e => {
@@ -1113,6 +1119,7 @@ function doUndo(){
     let r = null;
     if (Math.abs(dx) > Math.abs(dy)){ if (dx > T) r = 'yes'; else if (dx < -T) r = 'no'; }
     else if (dy < -T) r = 'half';
+    else if (dy > T) r = 'skip';
     cardEl.style.transition = '';
     if (r){ fly(r); return; }
     cardEl.style.transform = '';
@@ -1128,12 +1135,19 @@ cardEl.addEventListener('click', e => {
 });
 $('#rate').addEventListener('click', e => { const b = e.target.closest('button[data-r]'); if (b && !b.disabled) fly(b.dataset.r); });
 $('#undo').onclick = doUndo;
+$('#add-new').onclick = () => {
+  const ids = newIds(10, new Set(queue));
+  if (!ids.length){ toast('Keine neuen Wörter mehr in den gewählten Kategorien.'); return; }
+  if (current) queue.splice(1, 0, ...ids); else queue.push(...ids);
+  showCard(); toast(`${ids.length} neue Wörter kommen als Nächstes.`);
+};
 document.addEventListener('keydown', e => {
   if (!$('#view-learn').classList.contains('active') || e.target.matches('input,select,textarea')) return;
   const k = e.key;
-  if (k==='ArrowLeft' || k==='1'){ e.preventDefault(); fly('no'); }
-  else if (k==='ArrowUp' || k==='2'){ e.preventDefault(); fly('half'); }
-  else if (k==='ArrowRight' || k==='3'){ e.preventDefault(); fly('yes'); }
+  if (k==='ArrowDown' || k==='1'){ e.preventDefault(); fly('skip'); }
+  else if (k==='ArrowLeft' || k==='2'){ e.preventDefault(); fly('no'); }
+  else if (k==='ArrowUp' || k==='3'){ e.preventDefault(); fly('half'); }
+  else if (k==='ArrowRight' || k==='4'){ e.preventDefault(); fly('yes'); }
   else if (k===' '){ e.preventDefault(); if (current) speak(BYID.get(current.id).es); }
   else if (k==='Enter'){ reveal(); }
   else if (k==='z' || k==='Backspace'){ doUndo(); }
@@ -1142,30 +1156,53 @@ document.addEventListener('keydown', e => {
 /* =========================================================
    Vorlesen (Web Speech API)
    ========================================================= */
-let voices = [];
+let voices = [], lastUtter = null, unlocked = false;
+const NOVELTY = /^(eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley|oma|opa|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|albert|fred|junior|ralph|kathy)\b/i;
+const esVoices = () => voices.filter(v => /^es([-_]|$)/i.test(v.lang));
 function loadVoices(){
   if (!('speechSynthesis' in window)){ $('#voice-info').textContent = 'Dieser Browser kann nicht vorlesen.'; return; }
   voices = speechSynthesis.getVoices();
+  const es = esVoices(), sel = $('#s-voice');
+  sel.innerHTML = '<option value="">Automatisch</option>' + es.map(v => `<option value="${esc(v.name)}">${esc(v.name)} (${esc(v.lang)})</option>`).join('');
+  sel.value = es.some(v => v.name===S().voiceName) ? S().voiceName : '';
   const v = pickVoice();
-  $('#voice-info').textContent = v ? `${v.name} (${v.lang})` : 'Keine spanische Stimme gefunden – installiere eine in den Sprach-Einstellungen deines Systems.';
+  $('#voice-info').textContent = v ? `Aktiv: ${v.name} (${v.lang})` : (voices.length ? 'Keine spanische Stimme gefunden – bitte in den Systemeinstellungen nachinstallieren.' : 'Stimmen werden geladen …');
 }
 function pickVoice(){
-  const es = voices.filter(v => /^es([-_]|$)/i.test(v.lang));
+  const es = esVoices();
+  if (S().voiceName){ const m = es.find(v => v.name===S().voiceName); if (m) return m; }
+  const good = es.filter(v => !NOVELTY.test(v.name));
+  const list = good.length ? good : es;
   const pref = S().variant==='spain' ? ['es-ES'] : ['es-MX','es-US','es-419','es-CO','es-AR'];
   for (const p of pref){
-    const hit = es.find(v => v.lang.replace('_','-').toLowerCase()===p.toLowerCase());
+    const hits = list.filter(v => v.lang.replace('_','-').toLowerCase()===p.toLowerCase());
+    const hit = hits.find(v => /premium|enhanced|erweitert|siri/i.test(v.name)) || hits.find(v => v.localService) || hits[0];
     if (hit) return hit;
   }
-  return es[0] || null;
+  return list[0] || null;
 }
+// iOS gibt Sprachausgabe erst nach einer Berührung frei – beim ersten Tippen stumm „anstoßen“
+function unlockSpeech(){
+  if (unlocked || !('speechSynthesis' in window)) return;
+  unlocked = true;
+  try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } catch(e){}
+}
+['touchend','click','keydown'].forEach(ev => document.addEventListener(ev, unlockSpeech, {once:true, capture:true}));
 function speak(text){
   if (!('speechSynthesis' in window)){ toast('Vorlesen wird von diesem Browser nicht unterstützt.'); return; }
-  speechSynthesis.cancel();
+  const synth = window.speechSynthesis;
+  if (!voices.length) voices = synth.getVoices();
+  const busy = synth.speaking || synth.pending;
+  if (busy) synth.cancel();
+  if (synth.paused) synth.resume();
   const u = new SpeechSynthesisUtterance(text.replace(/…/g,' ').replace(/\s*\/\s*/g,', ').replace(/\s+/g,' ').trim());
   const v = pickVoice();
-  if (v){ u.voice = v; u.lang = v.lang; } else u.lang = S().variant==='spain' ? 'es-ES' : 'es-MX';
-  u.rate = S().rate;
-  speechSynthesis.speak(u);
+  u.lang = v ? v.lang.replace('_','-') : (S().variant==='spain' ? 'es-ES' : 'es-MX');
+  if (v) u.voice = v;
+  u.rate = S().rate; u.volume = 1; u.pitch = 1;
+  u.onerror = e => { if (!['interrupted','canceled'].includes(e.error)) toast(`Vorlesen fehlgeschlagen (${e.error}). Stummschalter und Lautstärke prüfen.`); };
+  lastUtter = u; // Referenz halten, sonst bricht Safari manchmal ab
+  if (busy) setTimeout(() => synth.speak(u), 80); else synth.speak(u);
 }
 if ('speechSynthesis' in window){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; } else loadVoices();
 
@@ -1178,7 +1215,7 @@ function renderList(){
   const rows = VOCAB.filter(v => {
     const c = cardOf(v.id);
     if (fc && v.cat !== fc) return false;
-    if (fs==='due'){ if (!(c.seen && c.due <= now)) return false; }
+    if (fs==='due'){ if (!(c.seen && c.due <= now && !c.ignored)) return false; }
     else if (fs && status(c) !== fs) return false;
     return !q || norm(v.es).includes(q) || norm(v.de).includes(q);
   });
@@ -1189,11 +1226,20 @@ function renderList(){
     return `<div class="row">
       <button class="speak small" data-say="${esc(v.id)}" aria-label="${esc(v.es)} vorlesen">${SPEAKER}</button>
       <div><div class="r-es" lang="es">${esc(v.es)}</div>${S().showPron ? `<div class="r-pron">${esc(pron(v.es))}</div>` : ''}<div class="r-de">${esc(v.de)}</div></div>
-      <div class="r-meta"><span class="pill ${st}">${STATUS_LABEL[st]}</span>${c.seen ? `<span>✓${c.yes} ~${c.half} ✗${c.no}</span><span>${due}</span>` : ''}</div>
+      <div class="r-meta"><span class="pill ${st}">${STATUS_LABEL[st]}</span>${c.seen && !c.ignored ? `<span title="kann ich · lange · kurz">→${c.yes} ↑${c.half} ←${c.no}</span><span>${due}</span>` : ''}<button class="tog" data-tog="${esc(v.id)}">${c.ignored ? 'Wieder lernen' : 'Ausblenden'}</button></div>
     </div>`;
   }).join('');
 }
-$('#list').addEventListener('click', e => { const b = e.target.closest('[data-say]'); if (b) speak(b.dataset.say); });
+$('#list').addEventListener('click', e => {
+  const b = e.target.closest('[data-say]'); if (b) speak(b.dataset.say);
+  const t = e.target.closest('[data-tog]');
+  if (t){
+    const id = t.dataset.tog, c = ensure(id);
+    c.ignored = !c.ignored;
+    if (c.ignored){ queue = queue.filter(x => x !== id); if (current && current.id===id) current = null; }
+    save(); renderList(); toast(c.ignored ? `„${id}“ ausgeblendet.` : `„${id}“ wird wieder gelernt.`);
+  }
+});
 ['#q','#f-cat','#f-status'].forEach(s => $(s).addEventListener('input', renderList));
 
 function download(name, text, type){
@@ -1205,12 +1251,12 @@ function download(name, text, type){
 }
 const stamp = t => { if (!t) return ''; const d = new Date(t); return `${dayKey(t)} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
 const deDate = t => new Date(t).toLocaleDateString('de-DE');
-const HEAD = ['spanisch','deutsch','kategorie','lesehilfe','stand','gesehen','gewusst','halb','nicht_gewusst','intervall_tage','faktor','faellig','zuletzt'];
+const HEAD = ['spanisch','deutsch','kategorie','lesehilfe','stand','gesehen','kann_ich','lange_geschoben','kurz_geschoben','intervall_tage','faktor','faellig','zuletzt','ausgeblendet'];
 function exportCSV(){
   const q = s => '"' + String(s).replace(/"/g,'""') + '"';
   const rows = VOCAB.map(v => { const c = cardOf(v.id);
     return [v.es, v.de, v.cat, pron(v.es), STATUS_LABEL[status(c)], c.seen, c.yes, c.half, c.no,
-            String(Math.round(c.interval*1000)/1000).replace('.',','), String(c.ease).replace('.',','), c.seen ? stamp(c.due) : '', stamp(c.last)]; });
+            String(Math.round(c.interval*1000)/1000).replace('.',','), String(c.ease).replace('.',','), c.seen ? stamp(c.due) : '', stamp(c.last), c.ignored ? 'ja' : 'nein']; });
   download(`spanisch-vokabeln-${dayKey()}.csv`, '\ufeff' + [HEAD, ...rows].map(r => r.map(q).join(';')).join('\r\n'), 'text/csv;charset=utf-8');
   toast('CSV exportiert.');
 }
@@ -1221,7 +1267,7 @@ function exportTXT(){
     const list = VOCAB.filter(v => v.cat===cat); if (!list.length) return;
     out += `\n== ${cat} ==\n`;
     list.forEach(v => { const c = cardOf(v.id);
-      const info = c.seen ? `${STATUS_LABEL[status(c)]} · gewusst ${c.yes}× · halb ${c.half}× · nicht ${c.no}× · fällig ${deDate(c.due)}` : 'Neu';
+      const info = c.ignored ? 'Ausgeblendet' : c.seen ? `${STATUS_LABEL[status(c)]} · kann ich ${c.yes}× · lange ${c.half}× · kurz ${c.no}× · fällig ${deDate(c.due)}` : 'Neu';
       out += `${v.es}  [${pron(v.es)}]  =  ${v.de}   | ${info}\n`; });
   });
   download(`spanisch-vokabeln-${dayKey()}.txt`, out, 'text/plain;charset=utf-8');
@@ -1258,9 +1304,11 @@ function importCSV(text){
     const es = g('spanisch'), de = g('deutsch');
     if (!es || !de) return;
     if (!BYID.has(es)){ const cat = g('kategorie') || 'Eigene Wörter'; addWord(es, de, cat); state.custom.push({es, de, cat}); added++; }
-    if (hasHead && ix('gesehen') >= 0 && num(g('gesehen')) > 0){
-      state.cards[es] = {seen:num(g('gesehen')), yes:num(g('gewusst')), half:num(g('halb')), no:num(g('nicht_gewusst')),
-        ease:num(g('faktor')) || 2.5, interval:num(g('intervall_tage')), due:time(g('faellig')) || Date.now(), last:time(g('zuletzt')), lapses:num(g('nicht_gewusst'))};
+    const ign = g('ausgeblendet').toLowerCase()==='ja';
+    if (hasHead && ix('gesehen') >= 0 && (num(g('gesehen')) > 0 || ign)){
+      const kurz = num(g('kurz_geschoben') || g('nicht_gewusst'));
+      state.cards[es] = {seen:num(g('gesehen')), yes:num(g('kann_ich') || g('gewusst')), half:num(g('lange_geschoben') || g('halb')), no:kurz,
+        ease:num(g('faktor')) || 2.5, interval:num(g('intervall_tage')), due:time(g('faellig')) || Date.now(), last:time(g('zuletzt')), lapses:kurz, ignored:ign};
       stats++;
     }
   });
@@ -1288,9 +1336,9 @@ $('#add-btn').onclick = () => {
    Statistik
    ========================================================= */
 function renderStats(){
-  const now = Date.now(), cnt = {neu:0, lernend:0, jung:0, gefestigt:0};
+  const now = Date.now(), cnt = {neu:0, lernend:0, jung:0, gefestigt:0, aus:0};
   let due = 0, yes = 0, all = 0;
-  VOCAB.forEach(v => { const c = cardOf(v.id); cnt[status(c)]++; if (c.seen && c.due <= now) due++; yes += c.yes; all += c.seen; });
+  VOCAB.forEach(v => { const c = cardOf(v.id); cnt[status(c)]++; if (c.seen && !c.ignored && c.due <= now) due++; yes += c.yes; all += c.seen; });
   const today = state.log[dayKey()] || 0;
   const days = [...Array(14)].map((_,i) => { const t = new Date(); t.setDate(t.getDate() - 13 + i); return {k:dayKey(t.getTime()), d:t}; });
   const max = Math.max(1, ...days.map(d => state.log[d.k] || 0));
@@ -1299,11 +1347,12 @@ function renderStats(){
   $('#stats').innerHTML = `
     <h2>Statistik</h2>
     <div class="tiles">
-      <div class="tile"><b>${VOCAB.length - cnt.neu}</b><span>von ${VOCAB.length} Wörtern angefangen</span></div>
+      <div class="tile"><b>${VOCAB.length - cnt.neu - cnt.aus}</b><span>von ${VOCAB.length - cnt.aus} Wörtern angefangen</span></div>
       <div class="tile"><b>${cnt.gefestigt}</b><span>gefestigt (≥ 3 Wochen)</span></div>
       <div class="tile"><b>${due}</b><span>jetzt fällig</span></div>
       <div class="tile"><b>${today}</b><span>Karten heute</span></div>
-      <div class="tile"><b>${all ? Math.round(yes/all*100) : 0} %</b><span>gewusst (gesamt)</span></div>
+      <div class="tile"><b>${all ? Math.round(yes/all*100) : 0} %</b><span>der Antworten „kann ich“</span></div>
+      <div class="tile"><b>${cnt.aus}</b><span>ausgeblendet</span></div>
       <div class="tile"><b>${streak}</b><span>${streak===1 ? 'Tag' : 'Tage'} am Stück</span></div>
     </div>
     <h3>Karten der letzten 14 Tage</h3>
@@ -1311,9 +1360,9 @@ function renderStats(){
     <div class="barlbl">${days.map(d => `<span>${d.d.toLocaleDateString('de-DE',{weekday:'narrow'})}</span>`).join('')}</div>
     <h3>Fortschritt nach Kategorie</h3>
     <div class="legend"><span><i style="background:var(--yes)"></i>Gefestigt</span><span><i style="background:var(--half)"></i>Jung</span><span><i style="background:var(--no)"></i>In Arbeit</span></div>
-    ${CATS.map(cat => { const l = VOCAB.filter(v => v.cat===cat); const c = {lernend:0, jung:0, gefestigt:0, neu:0}; l.forEach(v => c[status(cardOf(v.id))]++);
-      return `<div class="prog"><div class="lbl"><span>${esc(cat)}</span><span>${l.length - c.neu}/${l.length}</span></div>
-        <div class="track">${['gefestigt','jung','lernend'].map(s => `<i style="width:${c[s]/l.length*100}%;background:${COL[s]}"></i>`).join('')}</div></div>`; }).join('')}`;
+    ${CATS.map(cat => { const l = VOCAB.filter(v => v.cat===cat); const c = {lernend:0, jung:0, gefestigt:0, neu:0, aus:0}; l.forEach(v => c[status(cardOf(v.id))]++); const tot = Math.max(1, l.length - c.aus);
+      return `<div class="prog"><div class="lbl"><span>${esc(cat)}</span><span>${l.length - c.neu - c.aus}/${l.length - c.aus}</span></div>
+        <div class="track">${['gefestigt','jung','lernend'].map(s => `<i style="width:${c[s]/tot*100}%;background:${COL[s]}"></i>`).join('')}</div></div>`; }).join('')}`;
 }
 
 /* =========================================================
@@ -1343,6 +1392,7 @@ bind('#s-pron','showPron', e => e.checked);
 bind('#s-variant','variant', e => e.value);
 bind('#s-auto','autoSpeak', e => e.checked);
 $('#s-rate').addEventListener('input', e => { S().rate = parseFloat(e.target.value); $('#s-rate-val').textContent = `${Math.round(S().rate*100)} %`; save(); });
+$('#s-voice').addEventListener('change', e => { S().voiceName = e.target.value; save(); loadVoices(); });
 $('#voice-test').onclick = () => speak('¡Hola! ¿Qué tal? Mucho gusto.');
 $('#cats').addEventListener('change', () => {
   const on = [...$('#cats').querySelectorAll('input:checked')].map(i => i.value);
@@ -1364,7 +1414,7 @@ function go(view){
   if (view==='learn'){ if (dirty) buildQueue(); else showCard(); }
   if (view==='list') renderList();
   if (view==='stats') renderStats();
-  if (view==='settings') fillSettings();
+  if (view==='settings'){ fillSettings(); loadVoices(); }
 }
 document.querySelector('nav').addEventListener('click', e => { const b = e.target.closest('button'); if (b) go(b.dataset.view); });
 let toastT;
