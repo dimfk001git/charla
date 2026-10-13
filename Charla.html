@@ -232,6 +232,13 @@ input[type=checkbox]{width:20px;height:20px;accent-color:var(--primary);flex:non
 .deckinfo b{font-family:var(--display);font-size:1.05rem}
 .status{font-size:.85rem;color:var(--muted);margin:6px 0 0;min-height:1.2em;white-space:pre-line}
 .status.err{color:var(--no)}
+.rate button[hidden]{display:none}
+.act{padding:8px 0;border-bottom:1px solid var(--line)}
+.act .h{display:flex;align-items:center;gap:8px;font-weight:700}
+.act .h input{width:20px;height:20px}
+.act .dl{display:flex;gap:8px;align-items:center;margin:6px 0 0 28px;flex-wrap:wrap;font-size:.92rem;color:var(--muted)}
+.act .dl input{width:78px}
+.act.off .dl{opacity:.45}
 .catgroup{border:1px solid var(--line);border-radius:12px;padding:6px 12px 10px;margin:8px 0}
 .catgroup legend{padding:0 4px;font-weight:700}
 .catgroup legend label{display:flex;gap:8px;align-items:center}
@@ -344,6 +351,10 @@ pre.sample{background:var(--soft);border-radius:10px;padding:10px 12px;font-size
         <div id="voice-rows"></div>
         <p class="meta" style="margin-top:8px">iPhone: Der Stummschalter muss aus sein, sonst bleibt das Vorlesen über den eingebauten Lautsprecher stumm.</p>
 
+        <h3>Aktionen und Wartezeiten</h3>
+        <p class="meta">Pro Aktion: ob sie angeboten wird und nach welcher Zeit die Karte erstmals wiederkommt. Danach wachsen die Abstände bei „Lange schieben“ und „Sitzt“ von selbst. Ist eine Aktion aus, verschwindet ihr Knopf, ihre Wischrichtung und ihre Taste.</p>
+        <div id="acts"></div>
+
         <h3>Wischrichtungen</h3>
         <p class="meta">Was passiert, wenn du die Karte in eine Richtung schiebst. Die Pfeiltasten am Computer folgen derselben Belegung.</p>
         <div class="set"><label for="sw-left">← Nach links</label><select id="sw-left" data-dir="left"></select></div>
@@ -351,7 +362,7 @@ pre.sample{background:var(--soft);border-radius:10px;padding:10px 12px;font-size
         <div class="set"><label for="sw-up">↑ Nach oben</label><select id="sw-up" data-dir="up"></select></div>
         <div class="set"><label for="sw-down">↓ Nach unten</label><select id="sw-down" data-dir="down"></select></div>
         <p class="meta" style="margin-top:8px">Ist der Text länger als die Karte, scrollt Wischen nach oben und unten den Text. Bewertet wird dann seitlich oder mit den Tasten unter der Karte.</p>
-        <div class="tools"><button class="btn" id="sw-reset">Standardbelegung wiederherstellen</button></div>
+        <div class="tools"><button class="btn" id="sw-reset">Standardwerte wiederherstellen</button></div>
 
         <h3>Quellen auf GitHub</h3>
         <p class="meta">Aus diesen Ordnern lädt die App alle CSV- und Excel-Dateien als Stapel. Unterordner werden zu Gruppen.</p>
@@ -381,7 +392,7 @@ Unit 1;Theme 1;salt;[sɔːlt];Salz;</pre>
         <h3>So funktioniert es</h3>
         <div class="note">
           <p><b>Antippen</b> dreht die Karte um. Der <b>Lautsprecher</b> liest den Text daneben vor; noch einmal tippen stoppt.</p>
-          <p><b>Kurz schieben</b>: kommt am Ende der Runde noch einmal. <b>Lange schieben</b>: wieder in 3 Tagen, danach in wachsenden Abständen. <b>Sitzt</b>: wieder in 30 Tagen, danach deutlich später. <b>Brauch ich nicht</b>: wird ausgeblendet und lässt sich in der Liste zurückholen.</p>
+          <p>Die Wartezeiten stellst du in den Einstellungen ein (Standard: <b>Kurz schieben</b> 10 Minuten, <b>Lange schieben</b> 3 Tage, <b>Sitzt</b> 30 Tage; danach wachsen die Abstände). <b>Brauch ich nicht</b> blendet die Karte aus; in der Liste holst du sie zurück. Jede Aktion lässt sich in den Einstellungen abschalten.</p>
           <p>Am Computer: Pfeiltasten oder 1–4 zum Bewerten, Eingabetaste zum Umdrehen, Leertaste zum Vorlesen, Z für Rückgängig.</p>
         </div>
 
@@ -559,12 +570,18 @@ const RATE_LABEL = {no:'Kurz schieben', half:'Lange schieben', yes:'Sitzt', skip
 const STAMP = {no:'Kurz', half:'Lange', yes:'Sitzt', skip:'Brauch ich nicht'};
 const XLSX_URLS = ['https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'];
 
-const globalDefaults = () => ({rate:1, voices:{}, swipe:{left:'no', right:'yes', up:'half', down:'skip'}});
+const UNIT_MS = {min:MIN, hour:36e5, day:DAY};
+const SPECIAL = {no:['same','next'], half:['next'], yes:[]}, SPECIAL_LABEL = {same:'In derselben Session', next:'In der nächsten Session'};
+const delayDefaults = () => ({no:{v:10, u:'min'}, half:{v:3, u:'day'}, yes:{v:30, u:'day'}});
+const onDefaults = () => ({no:true, half:true, yes:true, skip:true});
+const globalDefaults = () => ({rate:1, voices:{}, swipe:{left:'no', right:'yes', up:'half', down:'skip'}, delay:delayDefaults(), on:onDefaults()});
 function cleanGlobal(s){
   const d = globalDefaults(); s = s && typeof s === 'object' ? s : {};
   const sw = s.swipe && typeof s.swipe === 'object' ? s.swipe : {};
   return {rate:Math.max(.6, Math.min(1.4, +s.rate || 1)), voices:s.voices && typeof s.voices === 'object' ? s.voices : {},
-    swipe:Object.fromEntries(DIRS.map(k => [k, RATES.includes(sw[k]) || sw[k]==='none' ? sw[k] : d.swipe[k]]))};
+    swipe:Object.fromEntries(DIRS.map(k => [k, RATES.includes(sw[k]) || sw[k]==='none' ? sw[k] : d.swipe[k]])),
+    delay:Object.fromEntries(['no','half','yes'].map(k => { const x = s.delay && s.delay[k] || {}, dd = d.delay[k]; const v = parseFloat(x.v); return [k, {v:v > 0 && v <= 9999 ? v : dd.v, u:UNIT_MS[x.u] || SPECIAL[k].includes(x.u) ? x.u : dd.u}]; })),
+    on:Object.fromEntries(RATES.map(k => [k, !(s.on && s.on[k] === false)]))};
 }
 const deckDefaults = () => ({dir:'ab', showAll:false, auto:'off', onlyAkt:false, cats:null, newPer:10, order:'random'});
 function cleanDeckSet(s){
@@ -638,15 +655,17 @@ function dayKey(t = Date.now()){ const d = new Date(t); return `${d.getFullYear(
 function status(c){ if (c && c.ignored) return 'aus'; if (!c || !c.seen) return 'neu'; if (c.interval < 1) return 'lernend'; if (c.interval < 21) return 'jung'; return 'gefestigt'; }
 const STATUS_LABEL = {neu:'Neu', lernend:'In Arbeit', jung:'Jung', gefestigt:'Gefestigt', aus:'Ausgeblendet'};
 
-/* kurz schieben → ans Ende der Runde · lange schieben → ab 3 Tage · sitzt → ab 30 Tage · brauch ich nicht → ausgeblendet */
+/* Session = Runde; kurz schieben → ans Ende der Runde · lange schieben → ab 3 Tage · sitzt → ab 30 Tage · brauch ich nicht → ausgeblendet */
 function dueInDays(d, now){ const t = new Date(now); t.setHours(0,0,0,0); t.setDate(t.getDate() + Math.max(1, Math.round(d))); return t.getTime(); }
 function schedule(c, r, now = Date.now()){
   c.m = now;
   if (r==='skip'){ c.ignored = true; return; }
   c.seen++; c.last = now;
-  if (r==='no'){ c.no++; c.lapses++; c.ease = Math.max(1.3, c.ease - .15); c.interval = 0; c.due = now + 10*MIN; }
-  else if (r==='half'){ c.half++; c.interval = c.interval < 3 ? 3 : Math.min(365, Math.round(c.interval * c.ease)); c.due = dueInDays(c.interval, now); }
-  else { c.yes++; c.interval = c.interval < 30 ? 30 : Math.min(365, Math.round(c.interval * c.ease * 1.5)); c.ease = Math.min(3, c.ease + .1); c.due = dueInDays(c.interval, now); }
+  const dl = S().delay, ms = k => (UNIT_MS[dl[k].u] || 0) * dl[k].v, sp = k => !UNIT_MS[dl[k].u];
+  const grow = (k, f) => { if (sp(k)){ c.interval = 0; c.due = now; return; } const base = ms(k) / DAY; if (c.interval < base) c.interval = base; else { c.interval = Math.min(365, c.interval * c.ease * f); if (c.interval >= 1) c.interval = Math.round(c.interval); } c.due = c.interval >= 1 ? dueInDays(c.interval, now) : now + c.interval * DAY; };
+  if (r==='no'){ c.no++; c.lapses++; c.ease = Math.max(1.3, c.ease - .15); c.interval = 0; c.due = now + ms('no'); }
+  else if (r==='half'){ c.half++; grow('half', 1); }
+  else { c.yes++; grow('yes', 1.5); c.ease = Math.min(3, c.ease + .1); }
   c.ease = Math.round(c.ease*100)/100;
 }
 function fmtWait(ms){
@@ -655,7 +674,7 @@ function fmtWait(ms){
   const d = Math.round(ms/DAY); if (d < 31) return d===1 ? '1 Tag' : `${d} Tage`;
   const mo = Math.round(d/30); return mo===1 ? '1 Monat' : `${mo} Monate`;
 }
-function preview(id, r){ if (r==='skip') return 'weg'; const c = {...cardOf(id)}; const now = Date.now(); schedule(c, r, now); return c.interval >= 1 ? fmtWait(c.interval*DAY) : fmtWait(c.due - now); }
+function preview(id, r){ if (r==='skip') return 'weg'; if (r!=='yes' && !UNIT_MS[S().delay[r].u]) return S().delay[r].u==='same' ? 'gleich nochmal' : 'nächste Session'; const c = {...cardOf(id)}; const now = Date.now(); schedule(c, r, now); return c.interval >= 1 ? fmtWait(c.interval*DAY) : fmtWait(c.due - now); }
 
 /* =========================================================
    Sitzung
@@ -715,6 +734,7 @@ function updateCounts(){
 const SPEAKER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
 const STOP = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
 const FLIP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/></svg>';
+const live = r => RATES.includes(r) && S().on[r];
 const arrowsFor = r => DIRS.filter(d => S().swipe[d]===r).map(d => ARROW[d]).join('');
 const cardEl = $('#card'), doneEl = $('#done');
 
@@ -771,13 +791,13 @@ function showCard(){
   cardEl.style.transition = 'none'; cardEl.style.transform = ''; cardEl.style.opacity = '';
   cardEl.classList.remove('enter'); void cardEl.offsetWidth; cardEl.classList.add('enter');
   requestAnimationFrame(() => cardEl.style.transition = '');
-  RATES.forEach(r => $('#pv-'+r).textContent = `${arrowsFor(r)} ${preview(id, r)}`.trim());
+  RATES.forEach(r => { $('#pv-'+r).textContent = `${arrowsFor(r)} ${preview(id, r)}`.trim(); const b = $('#rate [data-r="'+r+'"]'); if (b) b.hidden = !S().on[r]; });
   if (isNew) autoSpeak(DS().showAll ? 'all' : 'front');
 }
 function renderCard(){
   const v = BYID.get(current.id), all = DS().showAll;
   const top = `<div class="card-top"><span class="nr">${esc(topLeft(v))}</span><span class="chip">${esc(catKey(v))}</span></div>`;
-  const stamps = DIRS.map(d => RATES.includes(S().swipe[d]) ? `<div class="stamp d-${d} r-${S().swipe[d]}" data-d="${d}">${STAMP[S().swipe[d]]}</div>` : '').join('');
+  const stamps = DIRS.map(d => live(S().swipe[d]) ? `<div class="stamp d-${d} r-${S().swipe[d]}" data-d="${d}">${STAMP[S().swipe[d]]}</div>` : '').join('');
   const body = all ? `${blockFront(v)}<div class="divider"></div>${blockBack(v, false)}` : (flipped ? blockBack(v, true) : blockFront(v));
   const what = D.type === 'info' ? 'die Erläuterung' : 'die Lösung';
   const foot = all ? '' : `<span class="hint">${FLIP}<span>${flipped ? 'Antippen für die Vorderseite' : 'Antippen für ' + what}</span></span>`;
@@ -858,12 +878,12 @@ function rate(r){
   undo.logged = r !== 'skip';
   sess[r]++;
   queue.shift();
-  if (r==='skip') queue = queue.filter(x => x !== id); else if (r==='no') queue.push(id);
+  if (r==='skip') queue = queue.filter(x => x !== id); else if (r==='no' && (S().delay.no.u==='same' || (UNIT_MS[S().delay.no.u] && S().delay.no.v * UNIT_MS[S().delay.no.u] <= 60*MIN))) queue.push(id);
   current = null;
   save(); showCard();
 }
 function fly(r, dir){
-  if (!current || flipping || !RATES.includes(r)) return;
+  if (!current || flipping || !live(r)) return;
   dir = dir || DIRS.find(d => S().swipe[d]===r) || {no:'left', yes:'right', half:'up', skip:'down'}[r];
   const dx = {left:-1, right:1}[dir] || 0, dy = {up:-1, down:1}[dir] || 0;
   stopSpeak();
@@ -908,7 +928,7 @@ function doUndo(){
     else if (dy < -T) dir = 'up';
     else if (dy > T) dir = 'down';
     cardEl.style.transition = '';
-    if (dir && RATES.includes(S().swipe[dir])){ fly(S().swipe[dir], dir); return; }
+    if (dir && live(S().swipe[dir])){ fly(S().swipe[dir], dir); return; }
     clear();
     if (Math.abs(dx) < 6 && Math.abs(dy) < 6) flip();
   });
@@ -1335,7 +1355,16 @@ function fillSettings(){
   }
   $('#s-rate').value = S().rate; $('#s-rate-val').textContent = `${Math.round(S().rate*100)} %`;
   DIRS.forEach(d => { const el = $('#sw-'+d); el.innerHTML = ['no','half','yes','skip','none'].map(r => `<option value="${r}">${RATE_LABEL[r]}</option>`).join(''); el.value = S().swipe[d]; });
-  renderSources(); loadVoices(); renderMigrate();
+  fillActs(); renderSources(); loadVoices(); renderMigrate();
+}
+const ACT_HINT = {no:'kommt wieder nach', half:'kommt wieder nach', yes:'kommt wieder nach'};
+function fillActs(){
+  $('#acts').innerHTML = ['no','half','yes','skip'].map(k => {
+    const on = S().on[k], d = S().delay[k];
+    const dl = k === 'skip' ? `<div class="dl">Die Karte wird ausgeblendet und lässt sich in der Liste zurückholen.</div>`
+      : `<div class="dl">${UNIT_MS[d.u] ? ACT_HINT[k] : 'kommt wieder'} <input type="number" min="0.1" step="any" inputmode="decimal" value="${d.v}" data-k="${k}" data-f="v" aria-label="Zahl" ${UNIT_MS[d.u] ? '' : 'hidden'}><select data-k="${k}" data-f="u" aria-label="Einheit">${[...SPECIAL[k].map(u => [u, SPECIAL_LABEL[u]]), ['min','Minuten'],['hour','Stunden'],['day','Tage']].map(([u,l]) => `<option value="${u}" ${d.u===u ? 'selected' : ''}>${l}</option>`).join('')}</select>${d.u==='same' ? ' (am Ende der laufenden Runde)' : d.u==='next' ? ' (beim nächsten Start einer Runde)' : k==='no' ? ' (bei bis zu 1 Std. noch in dieser Runde)' : ''}</div>`;
+    return `<div class="act ${on ? '' : 'off'}"><label class="h"><input type="checkbox" data-k="${k}" data-f="on" ${on ? 'checked' : ''}> ${RATE_LABEL[k]}</label>${dl}</div>`;
+  }).join('');
 }
 function fillCats(){
   const sel = DS().cats, on = k => !sel || sel.includes(k);
@@ -1369,7 +1398,14 @@ $('#cats-none').onclick = () => { DS().cats = []; deckChanged(); fillCats(); };
 $('#s-rate').addEventListener('input', e => { S().rate = parseFloat(e.target.value) || 1; $('#s-rate-val').textContent = `${Math.round(S().rate*100)} %`; });
 $('#s-rate').addEventListener('change', save);
 DIRS.forEach(d => $('#sw-'+d).addEventListener('change', e => { S().swipe[d] = e.target.value; save(); }));
-$('#sw-reset').onclick = () => { S().swipe = globalDefaults().swipe; save(); fillSettings(); toast('Standardbelegung wiederhergestellt.'); };
+$('#sw-reset').onclick = () => { S().swipe = globalDefaults().swipe; S().delay = delayDefaults(); S().on = onDefaults(); save(); fillSettings(); toast('Standardwerte wiederhergestellt.'); };
+$('#acts').addEventListener('change', e => {
+  const t = e.target, k = t.dataset.k; if (!k) return;
+  if (t.dataset.f === 'on') S().on[k] = t.checked;
+  else if (t.dataset.f === 'v'){ const v = parseFloat(String(t.value).replace(',', '.')); if (v > 0 && v <= 9999) S().delay[k].v = v; }
+  else if (t.dataset.f === 'u') S().delay[k].u = t.value;
+  save(); fillActs(); if ($('#view-learn').classList.contains('active') || current) showCard();
+});
 
 /* =========================================================
    Lernstand: Export, Import, Übernahme aus alten Apps
